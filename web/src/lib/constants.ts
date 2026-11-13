@@ -21,8 +21,10 @@ For commercial licensing, please contact support@quantumnous.com
  */
 
 // System Configuration Defaults
-export const DEFAULT_SYSTEM_NAME = 'New API'
-export const DEFAULT_LOGO = '/logo.png'
+// 北斗AI工坊 fork: default display name/logo for this station. The upstream
+// project attribution in the footer (ProjectAttribution) is untouched.
+export const DEFAULT_SYSTEM_NAME = '北斗AI工坊'
+export const DEFAULT_LOGO = '/logo.svg'
 
 // LocalStorage Keys
 export const STORAGE_KEYS = {

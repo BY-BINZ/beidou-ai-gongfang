@@ -18,10 +18,9 @@ For commercial licensing, please contact support@quantumnous.com
 */
 import {
   Zap,
-  Shield,
-  Globe,
-  Code,
+  Route,
   Gauge,
+  Code,
   DollarSign,
   Users,
   HeartHandshake,
@@ -39,21 +38,21 @@ export function Features(_props: FeaturesProps) {
 
   const features = [
     {
-      id: 'fast',
+      id: 'unified',
       num: '01',
-      title: t('Lightning Fast'),
+      title: t('Unified API Entry'),
       desc: t(
-        'Optimized network architecture ensures millisecond response times'
+        'One key for OpenAI, Claude and Gemini compatible APIs — the website, canvas and software all use the same set.'
       ),
       span: 'md:col-span-2',
-      icon: <Zap className='size-4 text-blue-400' />,
+      icon: <Zap className='size-4 text-amber-500' />,
       visual: (
         <div className='mt-4 grid grid-cols-3 gap-2'>
-          {['OpenAI', 'Claude', 'Gemini', 'DeepSeek', 'Qwen', 'Llama'].map(
+          {['GPT', 'Claude', 'Gemini', 'DeepSeek', 'Qwen', 'Doubao'].map(
             (name) => (
               <div
                 key={name}
-                className='border-border/30 bg-muted/20 text-muted-foreground flex items-center justify-center rounded-lg border px-3 py-2 text-xs transition-colors duration-300 hover:border-blue-500/30 hover:bg-blue-500/5'
+                className='border-border/30 bg-muted/20 text-muted-foreground flex items-center justify-center rounded-lg border px-3 py-2 text-xs transition-colors duration-300 hover:border-amber-500/30 hover:bg-amber-500/5'
               >
                 {name}
               </div>
@@ -63,24 +62,55 @@ export function Features(_props: FeaturesProps) {
       ),
     },
     {
-      id: 'secure',
+      id: 'routing',
       num: '02',
-      title: t('Secure & Reliable'),
+      title: t('Smart Model Routing'),
       desc: t(
-        'Enterprise-grade security with comprehensive permission management'
+        'Routes by model, price and stability, and automatically switches on failure so generation never stops.'
       ),
       span: 'md:col-span-1',
-      icon: <Shield className='size-4 text-emerald-400' />,
+      icon: <Route className='size-4 text-orange-500' />,
+      visual: (
+        <div className='mt-4 space-y-2'>
+          {[t('Smart Routing'), t('Auto Retry'), t('Cost Tracking')].map(
+            (step, i) => (
+              <div key={step} className='flex items-center gap-2'>
+                <div
+                  className={`flex size-6 items-center justify-center rounded-full text-[10px] font-bold ${
+                    i === 1
+                      ? 'border border-amber-500/30 bg-amber-500/20 text-amber-600'
+                      : 'border-border/40 bg-muted text-muted-foreground border'
+                  }`}
+                >
+                  {i + 1}
+                </div>
+                <div className='bg-border/40 h-px flex-1' />
+                <span className='text-muted-foreground text-xs'>{step}</span>
+              </div>
+            )
+          )}
+        </div>
+      ),
+    },
+    {
+      id: 'usage',
+      num: '03',
+      title: t('Visible Usage'),
+      desc: t(
+        'Every call priced, every balance visible — check usage and remaining quota live in the console.'
+      ),
+      span: 'md:col-span-1',
+      icon: <Gauge className='size-4 text-yellow-600' />,
       visual: (
         <div className='mt-4 flex items-center justify-center'>
           <div className='relative'>
-            <div className='flex size-16 items-center justify-center rounded-2xl border border-emerald-500/20 bg-emerald-500/5'>
-              <Shield
-                className='size-7 text-emerald-500/70'
+            <div className='flex size-16 items-center justify-center rounded-2xl border border-amber-500/20 bg-amber-500/5'>
+              <Gauge
+                className='size-7 text-amber-500/70'
                 strokeWidth={1.5}
               />
             </div>
-            <div className='absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full bg-emerald-500'>
+            <div className='absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full bg-amber-500'>
               <svg
                 className='size-2.5 text-white'
                 fill='none'
@@ -96,35 +126,6 @@ export function Features(_props: FeaturesProps) {
               </svg>
             </div>
           </div>
-        </div>
-      ),
-    },
-    {
-      id: 'global',
-      num: '03',
-      title: t('Global Coverage'),
-      desc: t('Multi-region deployment for stable global access'),
-      span: 'md:col-span-1',
-      icon: <Globe className='size-4 text-violet-400' />,
-      visual: (
-        <div className='mt-4 space-y-2'>
-          {[t('Load Balancing'), t('Rate Limiting'), t('Cost Tracking')].map(
-            (step, i) => (
-              <div key={step} className='flex items-center gap-2'>
-                <div
-                  className={`flex size-6 items-center justify-center rounded-full text-[10px] font-bold ${
-                    i === 1
-                      ? 'border border-blue-500/30 bg-blue-500/20 text-blue-500'
-                      : 'border-border/40 bg-muted text-muted-foreground border'
-                  }`}
-                >
-                  {i + 1}
-                </div>
-                <div className='bg-border/40 h-px flex-1' />
-                <span className='text-muted-foreground text-xs'>{step}</span>
-              </div>
-            )
-          )}
         </div>
       ),
     },
@@ -148,7 +149,7 @@ export function Features(_props: FeaturesProps) {
             ))}
           </div>
           <div className='text-muted-foreground flex items-center gap-1.5 text-xs'>
-            <Code className='size-3.5 text-blue-500' />
+            <Code className='size-3.5 text-amber-500' />
             {t('Multi-protocol Compatible')}
           </div>
         </div>
@@ -174,8 +175,10 @@ export function Features(_props: FeaturesProps) {
     },
     {
       icon: <HeartHandshake className='size-5' strokeWidth={1.5} />,
-      title: t('Open Source'),
-      desc: t('Community driven, self-hosted, and extensible'),
+      title: t('Open Source & Self-Hosted'),
+      desc: t(
+        'Built on open-source New API — self-hosted, your data stays with you.'
+      ),
     },
   ]
 
@@ -187,9 +190,9 @@ export function Features(_props: FeaturesProps) {
             {t('Core Features')}
           </p>
           <h2 className='text-2xl leading-tight font-bold tracking-tight md:text-3xl'>
-            {t('Built for developers,')}
+            {t('One entry point,')}
             <br />
-            {t('designed for scale')}
+            {t('every model connected')}
           </h2>
         </AnimateInView>
 

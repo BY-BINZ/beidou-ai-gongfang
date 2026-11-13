@@ -16,7 +16,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
-import { CherryStudio } from '@lobehub/icons'
 import { Link } from '@tanstack/react-router'
 import { ArrowRight, BookOpen } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
@@ -50,6 +49,31 @@ export function Hero(props: HeroProps) {
   const { status } = useStatus()
   const docsUrl =
     (status?.docs_link as string | undefined) || 'https://docs.newapi.pro'
+
+  // 北斗AI工坊 ecosystem: one account works across the website, the
+  // infinite canvas and the desktop canvas app.
+  const ecosystem = [
+    {
+      name: t('Beidou AI Website'),
+      desc: 'beidouku.com',
+      href: 'https://www.beidouku.com',
+    },
+    {
+      name: t('Infinite Canvas'),
+      desc: t('Infinite-canvas creation'),
+      href: 'https://www.beidouku.com/canvas',
+    },
+    {
+      name: t('Beidou Canvas App'),
+      desc: t('Desktop infinite canvas'),
+      href: 'https://www.beidouku.com/canvas',
+    },
+    {
+      name: t('Consulting & Training'),
+      desc: t('AI for business'),
+      href: 'https://www.beidouku.com/consulting',
+    },
+  ]
 
   const renderDocsButton = () => {
     const isExternal = docsUrl.startsWith('http')
@@ -87,9 +111,9 @@ export function Hero(props: HeroProps) {
         className='pointer-events-none absolute inset-0 -z-10 opacity-25 dark:opacity-[0.12]'
         style={{
           background: [
-            'radial-gradient(ellipse 60% 50% at 20% 20%, oklch(0.72 0.18 250 / 80%) 0%, transparent 70%)',
-            'radial-gradient(ellipse 50% 40% at 80% 15%, oklch(0.65 0.15 200 / 60%) 0%, transparent 70%)',
-            'radial-gradient(ellipse 40% 35% at 40% 80%, oklch(0.70 0.12 280 / 40%) 0%, transparent 70%)',
+            'radial-gradient(ellipse 60% 50% at 20% 20%, oklch(0.75 0.12 90 / 80%) 0%, transparent 70%)',
+            'radial-gradient(ellipse 50% 40% at 80% 15%, oklch(0.8 0.08 100 / 60%) 0%, transparent 70%)',
+            'radial-gradient(ellipse 40% 35% at 40% 80%, oklch(0.7 0.1 70 / 40%) 0%, transparent 70%)',
           ].join(', '),
         }}
       />
@@ -104,24 +128,24 @@ export function Hero(props: HeroProps) {
         <div className='flex flex-col items-start text-left lg:col-span-6'>
           {/* Top Pill Badge */}
           <div
-            className='landing-animate-fade-up mb-5 inline-flex items-center gap-1.5 rounded-full border border-blue-500/20 bg-blue-500/5 px-3 py-1.5 text-[11px] font-medium text-blue-600 opacity-0 shadow-xs dark:border-blue-400/20 dark:bg-blue-400/5 dark:text-blue-400'
+            className='landing-animate-fade-up mb-5 inline-flex items-center gap-1.5 rounded-full border border-[#C9A227]/30 bg-[#C9A227]/10 px-3 py-1.5 text-[11px] font-medium text-[#8C6D1F] opacity-0 shadow-xs dark:border-[#C9A227]/30 dark:bg-[#C9A227]/10 dark:text-[#E3C566]'
             style={{ animationDelay: '0ms' }}
           >
             <span className='relative flex size-1.5'>
-              <span className='absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75' />
-              <span className='relative inline-flex size-1.5 rounded-full bg-blue-500 dark:bg-blue-400' />
+              <span className='absolute inline-flex h-full w-full animate-ping rounded-full bg-[#C9A227] opacity-75' />
+              <span className='relative inline-flex size-1.5 rounded-full bg-[#C9A227]' />
             </span>
-            <span>{t('AI Application Infrastructure Foundation')}</span>
+            <span>{t('One key for all AI models')}</span>
           </div>
 
           <h1
             className='landing-animate-fade-up text-[clamp(2.25rem,4.5vw,3.25rem)] leading-[1.15] font-bold tracking-tight'
             style={{ animationDelay: '60ms' }}
           >
-            {t('Unified API Gateway for')}
+            {t('One key, every model.')}
             <br />
-            <span className='bg-gradient-to-r from-blue-400 via-violet-400 to-purple-500 bg-clip-text text-transparent'>
-              {t('Vast Range of AI Models')}
+            <span className='bg-gradient-to-r from-[#C9A227] via-[#A67C00] to-[#8C6D1F] bg-clip-text text-transparent'>
+              {t('Text, image and video.')}
             </span>
           </h1>
           <p
@@ -129,7 +153,7 @@ export function Hero(props: HeroProps) {
             style={{ animationDelay: '120ms' }}
           >
             {t(
-              'Access a vast selection of models via a standard, unified API protocol. Power AI applications, manage digital assets, and connect the Future.'
+              "Beidou AI Workshop is Beidou's own model relay: one API for text, image and video models, with usage and cost visible at a glance — powering the website, the infinite canvas and the canvas software."
             )}
           </p>
 
@@ -169,65 +193,44 @@ export function Hero(props: HeroProps) {
             )}
           </div>
 
-          {/* Supported Apps (参考图二样式，进行卡片化和信息扩充设计，增加视觉高度) */}
+          {/* Beidou ecosystem: one account works across the website, the
+              infinite canvas and the desktop canvas app */}
           <div
             className='landing-animate-fade-up mt-10 w-full max-w-xl opacity-0'
             style={{ animationDelay: '240ms' }}
           >
             <div className='mb-4 flex flex-col gap-1'>
               <span className='text-muted-foreground/50 text-[10px] font-bold tracking-[0.15em] uppercase'>
-                {t('Supported Applications')}
+                {t('Beidou ecosystem — one account, everywhere')}
               </span>
               <p className='text-muted-foreground/60 text-xs leading-relaxed'>
                 {t(
-                  'Supports one-click configuration and perfectly adapts to NewAPI multi-protocol configuration.'
+                  'Register once here, then use the same account on the website, the infinite canvas and the canvas software.'
                 )}
               </p>
             </div>
             <div className='flex flex-wrap items-center gap-3'>
-              {/* Cherry Studio */}
-              <a
-                href='https://cherry-ai.com'
-                target='_blank'
-                rel='noopener noreferrer'
-                className='group border-border/40 bg-muted/15 text-foreground/80 hover:border-border hover:bg-muted/30 hover:text-foreground flex items-center gap-3 rounded-full border px-5 py-2.5 text-sm font-medium shadow-[0_1px_2.5px_rgba(0,0,0,0.01)] backdrop-blur-xs transition-all duration-300 hover:scale-[1.02]'
-              >
-                <CherryStudio.Color size={24} className='shrink-0' />
-                <span>Cherry Studio</span>
-              </a>
-
-              {/* CC Switch */}
-              <a
-                href='https://ccswitch.io'
-                target='_blank'
-                rel='noopener noreferrer'
-                className='group border-border/40 bg-muted/15 text-foreground/80 hover:border-border hover:bg-muted/30 hover:text-foreground flex items-center gap-3 rounded-full border px-5 py-2.5 text-sm font-medium shadow-[0_1px_2.5px_rgba(0,0,0,0.01)] backdrop-blur-xs transition-all duration-300 hover:scale-[1.02]'
-              >
-                <img
-                  src='https://ccswitch.io/favicon.png'
-                  alt='CC Switch'
-                  className='size-6 shrink-0 rounded-md object-contain'
-                  onError={(e) => {
-                    // Fallback to a styled text avatar if the remote favicon fails to load in sandbox or local environments
-                    e.currentTarget.style.display = 'none'
-                    const fallback = e.currentTarget.nextSibling as HTMLElement
-                    if (fallback) fallback.style.display = 'flex'
-                  }}
-                />
-                <span
-                  style={{ display: 'none' }}
-                  className='size-6 shrink-0 items-center justify-center rounded-md bg-blue-500/10 text-[10px] font-bold text-blue-600 dark:bg-blue-400/10 dark:text-blue-400'
+              {ecosystem.map((item) => (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='group border-border/40 bg-muted/15 text-foreground/80 hover:border-border hover:bg-muted/30 hover:text-foreground flex items-center gap-3 rounded-full border px-5 py-2.5 text-sm font-medium shadow-[0_1px_2.5px_rgba(0,0,0,0.01)] backdrop-blur-xs transition-all duration-300 hover:scale-[1.02]'
                 >
-                  CC
-                </span>
-                <span>CC Switch</span>
-              </a>
-
-              {/* "更多" */}
-              <div className='group border-border/40 bg-muted/15 text-foreground/55 hover:border-border hover:bg-muted/30 hover:text-foreground flex cursor-default items-center gap-2.5 rounded-full border px-5 py-2.5 text-sm font-medium shadow-[0_1px_2.5px_rgba(0,0,0,0.01)] backdrop-blur-xs transition-all duration-300 hover:scale-[1.02]'>
+                  <span className='flex size-6 shrink-0 items-center justify-center rounded-md bg-[#171410] text-xs font-bold text-[#C9A227]'>
+                    北
+                  </span>
+                  <span>{item.name}</span>
+                </a>
+              ))}
+              <a
+                href='/pricing'
+                className='group flex items-center gap-2'
+                aria-label={t('View all models')}
+              >
                 <MoreIcon />
-                <span>{t('More Apps')}</span>
-              </div>
+              </a>
             </div>
           </div>
         </div>
