@@ -350,6 +350,7 @@ func migrateDB() error {
 		&Option{},
 		&LoginEncryptionKey{},
 		&Redemption{},
+		&BridgeSyncEvent{},
 		&Ability{},
 		&Log{},
 		&Midjourney{},
