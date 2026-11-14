@@ -67,6 +67,19 @@ export function useTopNavLinks(): TopNavLink[] {
     links.push({ title: t('Home'), href: '/' })
   }
 
+  // 北斗AI工坊: links to the Beidou ecosystem, opened in a new tab.
+  // There is no Beidou ComfyUI node repo yet, so that entry is left out.
+  links.push({
+    title: t('Infinite Canvas'),
+    href: 'https://www.beidouku.com/canvas',
+    external: true,
+  })
+  links.push({
+    title: t('Resource Hub'),
+    href: 'https://www.beidouku.com',
+    external: true,
+  })
+
   // Console -> /dashboard (new console path)
   if (modules?.console !== false) {
     links.push({ title: t('Console'), href: '/dashboard' })
@@ -95,9 +108,10 @@ export function useTopNavLinks(): TopNavLink[] {
     }
   }
 
-  // About
+  // About: labelled Contact Us for this station; the page content (including
+  // the WeChat contact) is configured by the administrator.
   if (modules?.about !== false) {
-    links.push({ title: t('About'), href: '/about' })
+    links.push({ title: t('Contact Us'), href: '/about' })
   }
 
   return links

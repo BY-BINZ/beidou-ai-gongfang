@@ -1,3 +1,10 @@
+> # 北斗AI工坊
+>
+> 本仓库是 [QuantumNous/new-api](https://github.com/QuantumNous/new-api)（AGPL-3.0）的 fork，基线 tag `v1.0.0-rc.51`，改造成北斗自己的 AI 模型中转站：域名 api.beidouku.com，为北斗官网、无限画布、画布软件供算力。
+> 上游出处保留在页脚与 LICENSE/NOTICE 中；部署、渠道、定价见 [BEIDOU-CHANNELS.md](./BEIDOU-CHANNELS.md) 与 [HANDOFF.md](./HANDOFF.md)。
+>
+> ---
+
 <div align="center">
 
 ![new-api](/web/public/logo.png)

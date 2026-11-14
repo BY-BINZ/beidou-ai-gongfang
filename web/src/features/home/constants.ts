@@ -60,45 +60,46 @@ export const GATEWAY_FEATURES = [
 // Stats section - Default statistics
 export const DEFAULT_STATS = [
   {
-    value: '50',
+    value: '68',
     suffix: '+',
-    description: 'upstream services integrated',
+    description: 'models available',
   },
   {
-    value: '100',
-    suffix: '+',
-    description: 'model billing support',
+    value: '27',
+    suffix: '',
+    description: 'image models',
   },
   {
-    value: '50',
-    suffix: '+',
-    description: 'compatible API routes',
+    value: '12',
+    suffix: '',
+    description: 'video models',
   },
   {
-    value: '10',
-    suffix: '+',
-    description: 'scheduling controls',
+    value: '9',
+    suffix: '',
+    description: 'upstream providers',
   },
 ] as const
 
 // Features section - Default features
 export const DEFAULT_FEATURES = [
   {
-    title: 'Lightning Fast',
+    title: 'Unified API Entry',
     description:
-      'Optimized network architecture ensures millisecond response times',
+      'One key for OpenAI, Claude and Gemini compatible APIs — the website, canvas and software all use the same set.',
     iconName: 'Zap',
   },
   {
-    title: 'Secure & Reliable',
+    title: 'Smart Model Routing',
     description:
-      'Enterprise-grade security with comprehensive permission management',
-    iconName: 'Shield',
+      'Routes by model, price and stability, and automatically switches on failure so generation never stops.',
+    iconName: 'Route',
   },
   {
-    title: 'Global Coverage',
-    description: 'Multi-region deployment for stable global access',
-    iconName: 'Globe',
+    title: 'Visible Usage',
+    description:
+      'Every call priced, every balance visible — check usage and remaining quota live in the console.',
+    iconName: 'Gauge',
   },
   {
     title: 'Developer Friendly',
@@ -121,8 +122,9 @@ export const DEFAULT_FEATURES = [
     iconName: 'Users',
   },
   {
-    title: 'Open Source',
-    description: 'Community driven, self-hosted, and extensible',
+    title: 'Open Source & Self-Hosted',
+    description:
+      'Built on open-source New API — self-hosted, your data stays with you.',
     iconName: 'HeartHandshake',
   },
 ] as const
