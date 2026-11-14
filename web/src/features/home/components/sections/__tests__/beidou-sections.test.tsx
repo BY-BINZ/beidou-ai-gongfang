@@ -77,14 +77,24 @@ describe('Beidou home sections', () => {
       })
     ).toBeInTheDocument()
     expect(screen.getByText('Popular Models')).toBeInTheDocument()
-    // Text models: per-1M-token input/output prices.
+    // Text models: per-1M-token input/output prices (充值 column, from the
+    // 2026-11-14 07:00 live read of the pricing page). Delisted models were
+    // replaced with current ones: qwen3-max -> gpt-6.1-sol, grok-4.1 -> grok-4.6.
     expect(screen.getByText('claude-opus-5')).toBeInTheDocument()
     expect(screen.getByText('gemini-3.1-pro-preview')).toBeInTheDocument()
-    // Image models: per-image prices.
+    expect(screen.getByText('gpt-6.1-sol')).toBeInTheDocument()
+    expect(screen.getByText('grok-4.6')).toBeInTheDocument()
+    expect(screen.queryByText('qwen3-max')).not.toBeInTheDocument()
+    expect(screen.queryByText('grok-4.1')).not.toBeInTheDocument()
+    expect(screen.getByText(/Input ¥7\.2 \/ Output ¥36/)).toBeInTheDocument()
+    expect(screen.getByText(/Input ¥30 \/ Output ¥150/)).toBeInTheDocument()
+    // Image models: per-image prices (充值 column).
     expect(screen.getByText('banana2-official-1k')).toBeInTheDocument()
     expect(screen.getByText('bananaPRO')).toBeInTheDocument()
-    // Two image models share the ¥0.08 per-image price.
-    expect(screen.getAllByText(/¥0\.08 per image/)).toHaveLength(2)
+    expect(screen.getByText('¥0.5 per image')).toBeInTheDocument()
+    expect(screen.getByText('¥0.8 per image')).toBeInTheDocument()
+    expect(screen.getByText('¥1.2 per image')).toBeInTheDocument()
+    expect(screen.getByText('¥0.48 per image')).toBeInTheDocument()
     // Video models: per-second prices, dynamic ones labelled as such.
     expect(screen.getByText('wan3.0-video')).toBeInTheDocument()
     expect(screen.getByText(/¥0\.7 per second/)).toBeInTheDocument()

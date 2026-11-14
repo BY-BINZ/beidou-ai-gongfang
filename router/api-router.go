@@ -68,6 +68,13 @@ func SetApiRouter(router *gin.Engine) {
 		// in Pancake's matching webhook slot; handler enforces env match.
 		apiRouter.POST("/waffo-pancake/webhook/:env", anonymousRequestBodyLimit, controller.WaffoPancakeWebhook)
 
+		// 北斗官网积分打通内部接口：密钥 + 官网服务器 IP 白名单鉴权在
+		// handler 内完成，不走用户会话。见 BEIDOU-POINTS-BRIDGE.md。
+		bridgeRoute := apiRouter.Group("/bridge")
+		{
+			bridgeRoute.POST("/sync", middleware.CriticalRateLimit(), controller.BridgeSync)
+		}
+
 		// Universal secure verification routes
 		apiRouter.GET("/verify/methods", middleware.UserAuth(), middleware.DisableCache(), controller.GetVerificationMethods)
 		apiRouter.POST("/verify", middleware.UserAuth(), middleware.CriticalRateLimit(), middleware.UserCriticalRateLimit("security-verification"), middleware.DisableCache(), controller.UniversalVerify)

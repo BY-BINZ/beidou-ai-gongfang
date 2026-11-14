@@ -28,25 +28,32 @@ interface PopularModelsProps {
 }
 
 // Model names and prices are the real upstream names and the station's
-// reference prices (CNY). The live price list is the Model Square page;
-// the per-second price of the Doubao Seedance models is dynamic upstream.
+// selling prices (CNY, dapaoai 充值 column per the 2026-11-14 decision).
+// Source: BEIDOU-PRICING-CONFIG.md, from the full live read of
+// api.dapaoai.com/pricing on 2026-11-14 07:00 (Recharge mode, /1M unit).
+// Two homepage models were delisted from that page and replaced with
+// current ones: qwen3-max -> gpt-6.1-sol, grok-4.1 -> grok-4.6.
+// kimi-k3's 充值 price (¥30/¥150) is confirmed as read but its multiple
+// over 标准 (16.7x) is anomalous — re-check before enabling the channel.
+// The Doubao Seedance video models have no simple per-second price
+// (dynamic upstream expression), so they show as dynamic.
 export function PopularModels(_props: PopularModelsProps) {
   const { t } = useTranslation()
 
   const textModels = [
-    { name: 'claude-opus-5', input: '¥1.8', output: '¥9' },
-    { name: 'gemini-3.1-pro-preview', input: '¥1.3', output: '¥7.75' },
-    { name: 'deepseek-v4-pro', input: '¥2.7', output: '¥8.1' },
-    { name: 'qwen3-max', input: '¥1.5', output: '¥5.6' },
-    { name: 'grok-4.1', input: '¥3.75', output: '¥18.75' },
-    { name: 'kimi-k3', input: '¥1.8', output: '¥7.5' },
+    { name: 'claude-opus-5', input: '¥7.2', output: '¥36' },
+    { name: 'gemini-3.1-pro-preview', input: '¥5.2', output: '¥31' },
+    { name: 'deepseek-v4-pro', input: '¥10.8', output: '¥32.4' },
+    { name: 'gpt-6.1-sol', input: '¥0.9', output: '¥4.5' },
+    { name: 'grok-4.6', input: '¥1.5', output: '¥5.2' },
+    { name: 'kimi-k3', input: '¥30', output: '¥150' },
   ]
 
   const imageModels = [
-    { name: 'banana2-official-1k', price: '¥0.08' },
-    { name: 'banana2-official-2k', price: '¥0.12' },
-    { name: 'banana2-official-4k', price: '¥0.18' },
-    { name: 'bananaPRO', price: '¥0.08' },
+    { name: 'banana2-official-1k', price: '¥0.5' },
+    { name: 'banana2-official-2k', price: '¥0.8' },
+    { name: 'banana2-official-4k', price: '¥1.2' },
+    { name: 'bananaPRO', price: '¥0.48' },
     { name: 'gemini-nano-banana-2.1', price: '¥0.18' },
   ]
 
