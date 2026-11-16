@@ -30,50 +30,11 @@ interface HeroProps {
   isAuthenticated?: boolean
 }
 
-// Stylized three-dots indicator representing "More"
-const MoreIcon = () => (
-  <svg
-    className='text-muted-foreground/60 group-hover:text-foreground size-6 shrink-0 transition-colors'
-    viewBox='0 0 24 24'
-    fill='none'
-    xmlns='http://www.w3.org/2000/svg'
-  >
-    <circle cx='6' cy='12' r='2' fill='currentColor' />
-    <circle cx='12' cy='12' r='2' fill='currentColor' />
-    <circle cx='18' cy='12' r='2' fill='currentColor' />
-  </svg>
-)
-
 export function Hero(props: HeroProps) {
   const { t } = useTranslation()
   const { status } = useStatus()
   const docsUrl =
     (status?.docs_link as string | undefined) || 'https://docs.newapi.pro'
-
-  // 北斗AI工坊 ecosystem: one account works across the website, the
-  // infinite canvas and the desktop canvas app.
-  const ecosystem = [
-    {
-      name: t('Beidou AI Website'),
-      desc: 'beidouku.com',
-      href: 'https://www.beidouku.com',
-    },
-    {
-      name: t('Infinite Canvas'),
-      desc: t('Infinite-canvas creation'),
-      href: 'https://www.beidouku.com/canvas',
-    },
-    {
-      name: t('Beidou Canvas App'),
-      desc: t('Desktop infinite canvas'),
-      href: 'https://www.beidouku.com/canvas',
-    },
-    {
-      name: t('Consulting & Training'),
-      desc: t('AI for business'),
-      href: 'https://www.beidouku.com/consulting',
-    },
-  ]
 
   const renderDocsButton = () => {
     const isExternal = docsUrl.startsWith('http')
@@ -111,9 +72,9 @@ export function Hero(props: HeroProps) {
         className='pointer-events-none absolute inset-0 -z-10 opacity-25 dark:opacity-[0.12]'
         style={{
           background: [
-            'radial-gradient(ellipse 60% 50% at 20% 20%, oklch(0.75 0.12 90 / 80%) 0%, transparent 70%)',
-            'radial-gradient(ellipse 50% 40% at 80% 15%, oklch(0.8 0.08 100 / 60%) 0%, transparent 70%)',
-            'radial-gradient(ellipse 40% 35% at 40% 80%, oklch(0.7 0.1 70 / 40%) 0%, transparent 70%)',
+            'radial-gradient(ellipse 60% 50% at 20% 20%, oklch(0.72 0.14 265 / 80%) 0%, transparent 70%)',
+            'radial-gradient(ellipse 50% 40% at 80% 15%, oklch(0.71 0.16 294 / 60%) 0%, transparent 70%)',
+            'radial-gradient(ellipse 40% 35% at 40% 80%, oklch(0.66 0.16 263 / 40%) 0%, transparent 70%)',
           ].join(', '),
         }}
       />
@@ -128,12 +89,12 @@ export function Hero(props: HeroProps) {
         <div className='flex flex-col items-start text-left lg:col-span-6'>
           {/* Top Pill Badge */}
           <div
-            className='landing-animate-fade-up mb-5 inline-flex items-center gap-1.5 rounded-full border border-[#C9A227]/30 bg-[#C9A227]/10 px-3 py-1.5 text-[11px] font-medium text-[#8C6D1F] opacity-0 shadow-xs dark:border-[#C9A227]/30 dark:bg-[#C9A227]/10 dark:text-[#E3C566]'
+            className='landing-animate-fade-up mb-5 inline-flex items-center gap-1.5 rounded-full border border-[#7AA2FF]/30 bg-[#7AA2FF]/10 px-3 py-1.5 text-[11px] font-medium text-[#3D5AFE] opacity-0 shadow-xs dark:border-[#7AA2FF]/30 dark:bg-[#7AA2FF]/10 dark:text-[#A9C1FF]'
             style={{ animationDelay: '0ms' }}
           >
             <span className='relative flex size-1.5'>
-              <span className='absolute inline-flex h-full w-full animate-ping rounded-full bg-[#C9A227] opacity-75' />
-              <span className='relative inline-flex size-1.5 rounded-full bg-[#C9A227]' />
+              <span className='absolute inline-flex h-full w-full animate-ping rounded-full bg-[#7AA2FF] opacity-75' />
+              <span className='relative inline-flex size-1.5 rounded-full bg-[#7AA2FF]' />
             </span>
             <span>{t('One key for all AI models')}</span>
           </div>
@@ -144,7 +105,7 @@ export function Hero(props: HeroProps) {
           >
             {t('One key, every model.')}
             <br />
-            <span className='bg-gradient-to-r from-[#C9A227] via-[#A67C00] to-[#8C6D1F] bg-clip-text text-transparent'>
+            <span className='bg-gradient-to-r from-[#7AA2FF] via-[#A78BFA] to-[#5B8DEF] bg-clip-text text-transparent'>
               {t('Text, image and video.')}
             </span>
           </h1>
@@ -153,7 +114,7 @@ export function Hero(props: HeroProps) {
             style={{ animationDelay: '120ms' }}
           >
             {t(
-              "Beidou AI Workshop is Beidou's own model relay: one API for text, image and video models, with usage and cost visible at a glance — powering the website, the infinite canvas and the canvas software."
+              'Stargate API is a global AI model aggregation relay: one API for text, image and video models, with usage and cost visible at a glance.'
             )}
           </p>
 
@@ -191,47 +152,6 @@ export function Hero(props: HeroProps) {
                 {renderDocsButton()}
               </>
             )}
-          </div>
-
-          {/* Beidou ecosystem: one account works across the website, the
-              infinite canvas and the desktop canvas app */}
-          <div
-            className='landing-animate-fade-up mt-10 w-full max-w-xl opacity-0'
-            style={{ animationDelay: '240ms' }}
-          >
-            <div className='mb-4 flex flex-col gap-1'>
-              <span className='text-muted-foreground/50 text-[10px] font-bold tracking-[0.15em] uppercase'>
-                {t('Beidou ecosystem — one account, everywhere')}
-              </span>
-              <p className='text-muted-foreground/60 text-xs leading-relaxed'>
-                {t(
-                  'Register once here, then use the same account on the website, the infinite canvas and the canvas software.'
-                )}
-              </p>
-            </div>
-            <div className='flex flex-wrap items-center gap-3'>
-              {ecosystem.map((item) => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  className='group border-border/40 bg-muted/15 text-foreground/80 hover:border-border hover:bg-muted/30 hover:text-foreground flex items-center gap-3 rounded-full border px-5 py-2.5 text-sm font-medium shadow-[0_1px_2.5px_rgba(0,0,0,0.01)] backdrop-blur-xs transition-all duration-300 hover:scale-[1.02]'
-                >
-                  <span className='flex size-6 shrink-0 items-center justify-center rounded-md bg-[#171410] text-xs font-bold text-[#C9A227]'>
-                    北
-                  </span>
-                  <span>{item.name}</span>
-                </a>
-              ))}
-              <a
-                href='/pricing'
-                className='group flex items-center gap-2'
-                aria-label={t('View all models')}
-              >
-                <MoreIcon />
-              </a>
-            </div>
           </div>
         </div>
 

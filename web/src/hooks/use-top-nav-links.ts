@@ -67,19 +67,6 @@ export function useTopNavLinks(): TopNavLink[] {
     links.push({ title: t('Home'), href: '/' })
   }
 
-  // 北斗AI工坊: links to the Beidou ecosystem, opened in a new tab.
-  // There is no Beidou ComfyUI node repo yet, so that entry is left out.
-  links.push({
-    title: t('Infinite Canvas'),
-    href: 'https://www.beidouku.com/canvas',
-    external: true,
-  })
-  links.push({
-    title: t('Resource Hub'),
-    href: 'https://www.beidouku.com',
-    external: true,
-  })
-
   // Console -> /dashboard (new console path)
   if (modules?.console !== false) {
     links.push({ title: t('Console'), href: '/dashboard' })

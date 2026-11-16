@@ -317,7 +317,7 @@ export function EmailSettingsSection({
                         {...field}
                         autoComplete='off'
                         disabled={isSaving}
-                        placeholder='北斗AI工坊'
+                        placeholder='星门 API'
                       />
                     </FormControl>
                     <FormDescription>

@@ -41,51 +41,39 @@ function navLinks(headerNavModules?: Record<string, unknown>) {
       </QueryClientProvider>
     )
   }
-  return renderHook(() => useTopNavLinks(), { wrapper: Wrapper }).result
-    .current
+  return renderHook(() => useTopNavLinks(), { wrapper: Wrapper }).result.current
 }
 
-describe('useTopNavLinks — 北斗AI工坊 navigation', () => {
-  it('shows the Beidou ecosystem links after Home and before Console', () => {
+describe('useTopNavLinks', () => {
+  it('shows the built-in links in order', () => {
     const links = navLinks()
     expect(links.map((link) => link.title)).toEqual([
       'Home',
-      'Infinite Canvas',
-      'Resource Hub',
       'Console',
       'Model Square',
       'Rankings',
       'Docs',
       'Contact Us',
     ])
-    expect(links[1]).toMatchObject({
-      href: 'https://www.beidouku.com/canvas',
-      external: true,
-    })
-    expect(links[2]).toMatchObject({
-      href: 'https://www.beidouku.com',
-      external: true,
-    })
   })
 
   it('labels the about page as Contact Us and links it to /about', () => {
     const links = navLinks()
-    expect(
-      links.find((link) => link.title === 'Contact Us')
-    ).toMatchObject({ href: '/about' })
+    expect(links.find((link) => link.title === 'Contact Us')).toMatchObject({
+      href: '/about',
+    })
   })
 
-  it('has no ComfyUI entry: Beidou has no node repo yet', () => {
+  it('has no ComfyUI entry', () => {
     const links = navLinks()
     expect(
       links.some(
-        (link) =>
-          /comfyui/i.test(link.title) || /comfyui/i.test(link.href)
+        (link) => /comfyui/i.test(link.title) || /comfyui/i.test(link.href)
       )
     ).toBe(false)
   })
 
-  it('keeps the Beidou links when every built-in module is disabled', () => {
+  it('shows no links when every built-in module is disabled', () => {
     const links = navLinks({
       home: false,
       console: false,
@@ -94,17 +82,6 @@ describe('useTopNavLinks — 北斗AI工坊 navigation', () => {
       docs: false,
       about: false,
     })
-    expect(links).toEqual([
-      {
-        title: 'Infinite Canvas',
-        href: 'https://www.beidouku.com/canvas',
-        external: true,
-      },
-      {
-        title: 'Resource Hub',
-        href: 'https://www.beidouku.com',
-        external: true,
-      },
-    ])
+    expect(links).toEqual([])
   })
 })

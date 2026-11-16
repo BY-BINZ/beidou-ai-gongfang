@@ -26,7 +26,7 @@ import {
 
 const defaultSiteSettings: SiteSettings = {
   Notice: '',
-  SystemName: '北斗AI工坊',
+  SystemName: '星门 API',
   Logo: '',
   Footer: '',
   About: '',

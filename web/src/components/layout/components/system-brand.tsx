@@ -51,9 +51,9 @@ export function SystemBrand(props: SystemBrandProps) {
   const { logo } = useSystemConfig()
 
   const variant = props.variant ?? 'sidebar'
-  const name = status?.system_name || props.defaultName || '北斗AI工坊'
-  const version =
-    status?.version || props.defaultVersion || t('Unknown version')
+  const name = status?.system_name || props.defaultName || '星门 API'
+  // No version, no badge: the header shows the name only.
+  const version = status?.version || props.defaultVersion
 
   if (variant === 'inline') {
     return (
@@ -94,7 +94,9 @@ export function SystemBrand(props: SystemBrandProps) {
           </div>
           <div className='grid flex-1 text-start text-sm leading-tight group-data-[collapsible=icon]:hidden'>
             <span className='truncate font-semibold'>{name}</span>
-            <span className='truncate text-xs'>{version}</span>
+            {version ? (
+              <span className='truncate text-xs'>{version}</span>
+            ) : null}
           </div>
         </SidebarMenuButton>
       </SidebarMenuItem>

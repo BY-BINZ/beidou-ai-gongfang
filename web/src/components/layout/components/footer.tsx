@@ -159,7 +159,7 @@ export function Footer(props: FooterProps) {
   } = useSystemConfig()
 
   const displayLogo = systemLogo || props.logo || '/logo.svg'
-  const displayName = systemName || props.name || '北斗AI工坊'
+  const displayName = systemName || props.name || '星门 API'
   const isDemoSiteMode = Boolean(demoSiteEnabled)
   const currentYear = new Date().getFullYear()
 

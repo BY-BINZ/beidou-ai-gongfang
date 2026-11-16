@@ -25,50 +25,22 @@ import {
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 
-import { Ecosystem } from '../ecosystem'
 import { PopularModels } from '../popular-models'
 
-function BeidouSections() {
-  return (
-    <>
-      <Ecosystem />
-      <PopularModels />
-    </>
-  )
+function HomeSections() {
+  return <PopularModels />
 }
 
 async function renderSections() {
   const router = createRouter({
-    routeTree: createRootRoute({ component: BeidouSections }),
+    routeTree: createRootRoute({ component: HomeSections }),
     history: createMemoryHistory({ initialEntries: ['/'] }),
   })
   await router.load()
   render(<RouterProvider router={router} />)
 }
 
-describe('Beidou home sections', () => {
-  it('ecosystem shows the four Beidou destinations with their links', async () => {
-    await renderSections()
-    expect(
-      screen.getByRole('heading', {
-        name: 'One account, the whole Beidou family',
-      })
-    ).toBeInTheDocument()
-    expect(screen.getByText('Beidou Ecosystem')).toBeInTheDocument()
-    expect(
-      screen.getByRole('link', { name: /Beidou AI Website/ })
-    ).toHaveAttribute('href', 'https://www.beidouku.com')
-    expect(
-      screen.getByRole('link', { name: /Infinite Canvas/ })
-    ).toHaveAttribute('href', 'https://www.beidouku.com/canvas')
-    expect(
-      screen.getByRole('link', { name: /Beidou Canvas App/ })
-    ).toHaveAttribute('href', 'https://www.beidouku.com/canvas')
-    expect(
-      screen.getByRole('link', { name: /Consulting & Training/ })
-    ).toHaveAttribute('href', 'https://www.beidouku.com/consulting')
-  })
-
+describe('Home sections', () => {
   it('popular models lists real upstream model names with reference prices', async () => {
     await renderSections()
     expect(

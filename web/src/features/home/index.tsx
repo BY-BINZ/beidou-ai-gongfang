@@ -28,7 +28,6 @@ import { useAuthStore } from '@/stores/auth-store'
 
 import {
   CTA,
-  Ecosystem,
   Features,
   Hero,
   HowItWorks,
@@ -133,7 +132,6 @@ export function Home() {
       <Hero isAuthenticated={isAuthenticated} />
       <Stats />
       <Features />
-      <Ecosystem />
       <PopularModels />
       <HowItWorks />
       <CTA isAuthenticated={isAuthenticated} />
