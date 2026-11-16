@@ -128,15 +128,10 @@ function ProjectAttribution(props: { currentYear: number; inline?: boolean }) {
   const content = (
     <span className='text-muted-foreground/45'>
       &copy; {props.currentYear}{' '}
-      <a
-        href='https://github.com/QuantumNous/new-api'
-        target='_blank'
-        rel='noopener noreferrer'
-        className='text-foreground/70 hover:text-foreground font-medium transition-colors'
-      >
-        {t('New API')}
-      </a>
-      . {t(NEW_API_FOOTER_ATTRIBUTION_KEY)}
+      {/* Owner decision (2026-11-17): attribution text stays (AGPL notice),
+          hyperlink removed. */}
+      <span className='text-foreground/70 font-medium'>{t('New API')}</span>.{' '}
+      {t(NEW_API_FOOTER_ATTRIBUTION_KEY)}
     </span>
   )
   if (props.inline) {
