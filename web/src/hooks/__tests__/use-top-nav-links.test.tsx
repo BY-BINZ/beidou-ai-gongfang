@@ -52,7 +52,6 @@ describe('useTopNavLinks', () => {
       'Console',
       'Model Square',
       'Rankings',
-      'Docs',
       'Contact Us',
     ])
   })
@@ -79,7 +78,6 @@ describe('useTopNavLinks', () => {
       console: false,
       pricing: { enabled: false, requireAuth: false },
       rankings: { enabled: false, requireAuth: false },
-      docs: false,
       about: false,
     })
     expect(links).toEqual([])

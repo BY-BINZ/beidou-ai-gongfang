@@ -12,17 +12,21 @@
       name="description"
       content="星门 API：全球 AI 模型聚合中转平台，一个接口接通文字、图片、视频模型，用量和花费一目了然。"
     />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link
+      rel="icon"
+      type="image/webp"
+      href="https://www.beidouku.com/uploads/slot-1794862091812-0407f162.webp"
+    />
 
-    <meta name="theme-color" content="#0B1026" />
-    <!-- Resolve the theme before first paint so the page never flashes light
+    <meta name="theme-color" content="#EDEFFA" />
+    <!-- Resolve the theme before first paint so the page never flashes dark
          and one-shot detectors (e.g. Dark Reader) see the real theme.
          Keep in sync with ThemeProvider and THEME_STORAGE_KEYS.mode. -->
     <script>
       ;(function () {
-        var theme = 'dark'
+        var theme = 'light'
         try {
-          theme = localStorage.getItem('newapi:theme:v1:mode') || 'dark'
+          theme = localStorage.getItem('newapi:theme:v1:mode') || 'light'
         } catch (e) {}
         if (theme !== 'dark' && theme !== 'light') {
           theme = window.matchMedia('(prefers-color-scheme: dark)').matches
