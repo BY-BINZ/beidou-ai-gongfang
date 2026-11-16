@@ -163,7 +163,7 @@ export function SystemInfoSection({ defaultValues }: SystemInfoSectionProps) {
                   <FormItem>
                     <FormLabel>{t('System Name')}</FormLabel>
                     <FormControl>
-                      <Input placeholder={t('北斗AI工坊')} {...field} />
+                      <Input placeholder={t('星门 API')} {...field} />
                     </FormControl>
                     <FormDescription>
                       {t('The name displayed across the application')}
