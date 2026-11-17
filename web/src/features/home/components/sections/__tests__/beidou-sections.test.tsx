@@ -68,17 +68,54 @@ describe('Home sections', () => {
     expect(
       screen.getByText(/Output ¥0\.036 · \$0\.036 \/ 1K tokens/)
     ).toBeInTheDocument()
-    // Image models: per-image prices (充值 column), CNY + display currency.
-    expect(screen.getByText('banana2-official-1k')).toBeInTheDocument()
-    expect(screen.getByText('bananaPRO')).toBeInTheDocument()
-    expect(screen.getByText('¥0.5 · $0.5 / per image')).toBeInTheDocument()
-    expect(screen.getByText('¥0.8 · $0.8 / per image')).toBeInTheDocument()
-    expect(screen.getByText('¥1.2 · $1.2 / per image')).toBeInTheDocument()
-    expect(screen.getByText('¥0.48 · $0.48 / per image')).toBeInTheDocument()
-    // Video models: per-second prices, dynamic ones labelled as such.
-    expect(screen.getByText('wan3.0-video')).toBeInTheDocument()
-    expect(screen.getByText(/¥0\.7 · \$0\.7 \/ per second/)).toBeInTheDocument()
-    expect(screen.getAllByText('Dynamic pricing')).toHaveLength(2)
+    // Image models: per-image prices (relay's own selling prices, 1K
+    // default), CNY + display currency. Rule (owner, 2026-11-18):
+    // nothing over ¥0.5 per image, no 4K — show the cheap default.
+    expect(screen.getByText('gpt-image-2.5-flare')).toBeInTheDocument()
+    expect(screen.getByText('doubao-seedream-5-5')).toBeInTheDocument()
+    expect(screen.getByText('gpt-image-2.6-sunburst')).toBeInTheDocument()
+    expect(screen.getByText('qwen3-image')).toBeInTheDocument()
+    expect(screen.getByText('nano-banana-2-1')).toBeInTheDocument()
+    expect(
+      screen.getByText('¥0.08 · $0.08 / per image · 1K')
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText('¥0.26 · $0.26 / per image · 1K')
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText('¥0.3 · $0.3 / per image · 1K')
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText('¥0.4 · $0.4 / per image · 1K')
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText('¥0.5 · $0.5 / per image · 1K')
+    ).toBeInTheDocument()
+    expect(screen.queryByText('banana2-official-4k')).not.toBeInTheDocument()
+    expect(screen.queryByText(/¥1\.2 · \$1\.2/)).not.toBeInTheDocument()
+    // Video models: per-second prices (720P default), cheapest big-brand
+    // models first. No dynamic-priced entries any more.
+    expect(screen.getByText('kling-4.0-flash')).toBeInTheDocument()
+    expect(screen.getByText('grok-imagine-video-1.5')).toBeInTheDocument()
+    expect(screen.getByText('grok-video-3-10s')).toBeInTheDocument()
+    expect(screen.getByText('kling-4.0')).toBeInTheDocument()
+    expect(screen.getByText('wan-3.0-video')).toBeInTheDocument()
+    expect(
+      screen.getAllByText('¥0.37 · $0.37 / per second · 720P')
+    ).toHaveLength(2)
+    expect(
+      screen.getByText('¥0.44 · $0.44 / per second · 720P')
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText('¥0.58 · $0.58 / per second · 720P')
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText('¥0.7 · $0.7 / per second · 720P')
+    ).toBeInTheDocument()
+    expect(screen.queryByText('Dynamic pricing')).not.toBeInTheDocument()
+    expect(
+      screen.queryByText('wan3.0-video-official 1080P')
+    ).not.toBeInTheDocument()
     // The footnote points to the live price list, not the static numbers.
     // (The Button renders its link with role="button".)
     expect(

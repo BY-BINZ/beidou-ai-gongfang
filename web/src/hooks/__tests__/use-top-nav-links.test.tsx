@@ -53,7 +53,7 @@ describe('useTopNavLinks', () => {
       'Model Square',
       'Rankings',
       'Docs',
-      'Contact Us',
+      'Top-up',
     ])
   })
 
@@ -64,9 +64,9 @@ describe('useTopNavLinks', () => {
     })
   })
 
-  it('labels the about page as Contact Us and links it to /about', () => {
+  it('labels the about page as Top-up and links it to /about', () => {
     const links = navLinks()
-    expect(links.find((link) => link.title === 'Contact Us')).toMatchObject({
+    expect(links.find((link) => link.title === 'Top-up')).toMatchObject({
       href: '/about',
     })
   })
