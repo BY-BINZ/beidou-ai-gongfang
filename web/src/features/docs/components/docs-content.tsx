@@ -16,6 +16,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { CopyButton } from '@/components/copy-button'
@@ -123,20 +124,54 @@ function DocBlockView(props: { block: DocBlock }) {
  */
 export function DocsContent() {
   const { t } = useTranslation()
+  // The page loads at the top, so the first section starts out current.
+  const [activeSection, setActiveSection] = useState(DOC_SECTIONS[0]?.id ?? '')
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((entry) => entry.isIntersecting)
+        if (visible.length === 0) return
+        // The section nearest the top of the viewport is the one being read.
+        visible.sort(
+          (a, b) => a.boundingClientRect.top - b.boundingClientRect.top
+        )
+        const top = visible[0]
+        if (top) setActiveSection(top.target.id)
+      },
+      // The band starts below the fixed header and covers the top part of
+      // the viewport, so the highlight follows the section just read.
+      { rootMargin: '-96px 0px -55% 0px' }
+    )
+    for (const section of DOC_SECTIONS) {
+      const element = document.querySelector(`#${section.id}`)
+      if (element) observer.observe(element)
+    }
+    return () => observer.disconnect()
+  }, [])
 
   return (
     <div className='mx-auto flex max-w-6xl gap-8'>
       <aside className='sticky top-24 hidden h-fit w-48 shrink-0 lg:block'>
         <nav aria-label={t('Docs')} className='flex flex-col gap-1'>
-          {DOC_SECTIONS.map((section) => (
-            <a
-              key={section.id}
-              href={`#${section.id}`}
-              className='text-muted-foreground hover:text-foreground rounded-md px-3 py-1.5 text-sm transition-colors'
-            >
-              {section.title}
-            </a>
-          ))}
+          {DOC_SECTIONS.map((section) => {
+            const isActive = section.id === activeSection
+            return (
+              <a
+                key={section.id}
+                href={`#${section.id}`}
+                aria-current={isActive ? 'true' : undefined}
+                className={cn(
+                  'rounded-md px-3 py-1.5 text-sm transition-colors',
+                  isActive
+                    ? 'bg-primary/10 text-primary font-medium hover:bg-primary/15'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                )}
+              >
+                {section.title}
+              </a>
+            )
+          })}
         </nav>
       </aside>
       <div className='min-w-0 flex-1 space-y-10 pb-12'>
