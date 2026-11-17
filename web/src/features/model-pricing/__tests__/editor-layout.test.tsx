@@ -113,7 +113,9 @@ it.each(['none', 'standard', 'claude_ttl', 'openai_ttl'] as const)(
     const billing = await screen.findByRole('region', {
       name: 'Current Billing',
     })
-    expect(within(billing).getByText('16')).toBeVisible()
+    // Output price is $16 / 1M; the cell shows it as a dual value
+    // (display currency + CNY, symbols hidden here).
+    expect(within(billing).getByText('16 · 16')).toBeVisible()
     expect(within(billing).queryByText('Image input')).not.toBeInTheDocument()
     const preview = screen.getByRole('complementary', { name: 'Preview' })
     expect(await within(preview).findByText('$16')).toBeVisible()

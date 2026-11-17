@@ -37,6 +37,7 @@ import {
   isUnconfiguredTaskUsageModel,
 } from '../lib/dynamic-price'
 import { parseTags } from '../lib/filters'
+import { resolveModelDescription } from '../lib/model-descriptions'
 import { isTokenBasedModel } from '../lib/model-helpers'
 import { withBasePricing } from '../lib/plugin-pricing'
 import { formatPrice, formatRequestPrice } from '../lib/price'
@@ -308,7 +309,10 @@ export const ModelCard = memo(function ModelCard(props: ModelCardProps) {
       <CardContent className='flex flex-1 flex-col gap-3'>
         <div className='flex min-w-0 flex-col gap-1.5'>
           <p className='text-muted-foreground line-clamp-2 text-[13px] leading-5 break-words'>
-            {props.model.description || t('No description available.')}
+            {resolveModelDescription(
+              props.model.model_name,
+              props.model.description
+            ) || t('No description available.')}
           </p>
           {tags.length > 0 && (
             <div

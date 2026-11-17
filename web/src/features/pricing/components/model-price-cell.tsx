@@ -92,8 +92,9 @@ export function ModelPriceCell(props: {
   const unconfiguredCaption = dynamic?.hasUnconfiguredProviders
     ? t('Not configured for some providers')
     : ''
-  let caption = t('{{currency}} / {{unit}} tokens', {
-    currency: currencyLabel,
+  // The price value itself now shows both currencies ("¥X · 积分 Y"),
+  // so the caption only states the unit, not the currency.
+  let caption = t('{{unit}} tokens', {
     unit: tokenUnitLabel,
   })
 
@@ -228,7 +229,7 @@ export function ModelPriceCell(props: {
           ),
         },
       ]
-      caption = `${currencyLabel} / ${t('request')}`
+      caption = t('per request')
     }
   }
   return (
