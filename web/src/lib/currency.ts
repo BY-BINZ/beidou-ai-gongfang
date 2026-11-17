@@ -486,6 +486,72 @@ export function formatBillingCurrencyFromUSD(
 }
 
 /**
+ * Format a USD amount as CNY (¥) using the configured USD exchange rate.
+ *
+ * Unlike formatCurrencyFromUSD, this always renders in CNY regardless of
+ * the configured display currency, so a price can show both its points
+ * value and its RMB value side by side.
+ *
+ * @param amountUSD - Amount in system USD units
+ * @param options - Optional formatting configuration
+ * @returns Formatted string with the ¥ symbol (e.g. "¥0.50", "¥199.92")
+ *
+ * @example
+ * // With usdExchangeRate: 7.3
+ * formatCNYFromUSD(1) → "¥7.3"
+ * formatCNYFromUSD(0.5) → "¥3.65"
+ */
+export function formatCNYFromUSD(
+  amountUSD: number | null | undefined,
+  options?: CurrencyFormatOptions
+): string {
+  if (amountUSD == null || Number.isNaN(amountUSD)) return '-'
+
+  const { config } = getCurrencyDisplay()
+  const merged = mergeOptions(options)
+  const cnyAmount = amountUSD * config.usdExchangeRate
+  const cnyMeta: DisplayMeta = {
+    kind: 'currency',
+    symbol: '¥',
+    currencyCode: 'CNY',
+    exchangeRate: config.usdExchangeRate,
+  }
+  return formatCurrencyValue(cnyAmount, merged, cnyMeta)
+}
+
+export interface DualCurrencyOptions extends CurrencyFormatOptions {
+  /** Put the CNY part first (default: points first). */
+  cnyFirst?: boolean
+}
+
+/**
+ * Format a USD amount as both the configured display currency (points when
+ * the station uses a custom currency) and CNY, joined with " · ".
+ *
+ * This is the dual display used on the Model Square, balance and usage:
+ * customers see the RMB cost and the points cost together.
+ *
+ * @param amountUSD - Amount in system USD units
+ * @param options - Optional formatting configuration; `cnyFirst` puts ¥ first
+ * @returns Combined string (e.g. "¥0.50 · 积分 13.7" or "积分 13.7 · ¥0.50")
+ *
+ * @example
+ * // With quotaDisplayType: 'CUSTOM', symbol '积分', rate 200, usdExchangeRate 7.3
+ * formatDualCurrencyFromUSD(1, { cnyFirst: true }) → "¥7.3 · 积分 200"
+ * formatDualCurrencyFromUSD(1) → "积分 200 · ¥7.3"
+ */
+export function formatDualCurrencyFromUSD(
+  amountUSD: number | null | undefined,
+  options?: DualCurrencyOptions
+): string {
+  if (amountUSD == null || Number.isNaN(amountUSD)) return '-'
+
+  const points = formatCurrencyFromUSD(amountUSD, options)
+  const cny = formatCNYFromUSD(amountUSD, options)
+  return options?.cnyFirst ? `${cny} · ${points}` : `${points} · ${cny}`
+}
+
+/**
  * Format raw quota values (token units) to display currency.
  *
  * Converts raw quota/token amounts to USD first, then formats according

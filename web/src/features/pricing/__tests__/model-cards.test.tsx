@@ -174,6 +174,33 @@ describe('model cards', () => {
     expect(screen.getByRole('button', { name: 'Details' })).toBeEnabled()
   })
 
+  it('shows the synced upstream description when the model has no stored description', () => {
+    render(
+      <ModelCard
+        model={pricingModel({ model_name: 'nano-banana-2-1' })}
+        onClick={vi.fn()}
+      />
+    )
+    expect(screen.getByText(/文生图与改图同一个模型/)).toBeVisible()
+    expect(
+      screen.queryByText('No description available.')
+    ).not.toBeInTheDocument()
+  })
+
+  it('prefers the stored description over the synced upstream description', () => {
+    render(
+      <ModelCard
+        model={pricingModel({
+          model_name: 'nano-banana-2-1',
+          description: '商家自定义介绍',
+        })}
+        onClick={vi.fn()}
+      />
+    )
+    expect(screen.getByText('商家自定义介绍')).toBeVisible()
+    expect(screen.queryByText(/文生图与改图同一个模型/)).not.toBeInTheDocument()
+  })
+
   it('uses fixed spacing between available status samples', () => {
     render(
       <ModelCard

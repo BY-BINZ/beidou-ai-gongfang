@@ -16,7 +16,10 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
-import { formatBillingCurrencyFromUSD } from '@/lib/currency'
+import {
+  formatBillingCurrencyFromUSD,
+  formatDualCurrencyFromUSD,
+} from '@/lib/currency'
 
 import { QUOTA_TYPE_VALUES, TOKEN_UNIT_DIVISORS } from '../constants'
 import type { PricingModel, TokenUnit, PriceType } from '../types'
@@ -139,7 +142,9 @@ function applyRechargeRate(
 }
 
 /**
- * Format token-based price for display
+ * Format token-based price for display.
+ * Returns both the RMB price and the points price together
+ * (e.g. "¥0.0072 · 积分 0.21"), CNY first.
  */
 export function formatPrice(
   model: PricingModel,
@@ -166,11 +171,12 @@ export function formatPrice(
   )
 
   const price = priceInUSD / TOKEN_UNIT_DIVISORS[tokenUnit]
-  return formatBillingCurrencyFromUSD(price, {
+  return formatDualCurrencyFromUSD(price, {
     showSymbol: showCurrencySymbol,
     digitsLarge: 4,
     digitsSmall: 6,
     abbreviate: false,
+    cnyFirst: true,
   })
 }
 
@@ -242,7 +248,9 @@ export function formatFixedPrice(
 }
 
 /**
- * Format fixed price for pay-per-request models (minimum price from all groups)
+ * Format fixed price for pay-per-request models (minimum price from all groups).
+ * Returns both the RMB price and the points price together
+ * (e.g. "¥0.50 · 积分 13.7"), CNY first.
  */
 export function formatRequestPrice(
   model: PricingModel,
@@ -267,10 +275,11 @@ export function formatRequestPrice(
     usdExchangeRate
   )
 
-  return formatBillingCurrencyFromUSD(priceInUSD, {
+  return formatDualCurrencyFromUSD(priceInUSD, {
     showSymbol: showCurrencySymbol,
     digitsLarge: 4,
     digitsSmall: 4,
     abbreviate: false,
+    cnyFirst: true,
   })
 }

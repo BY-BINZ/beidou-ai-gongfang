@@ -83,6 +83,13 @@ export function useTopNavLinks(): TopNavLink[] {
     links.push({ title: t('Rankings'), href: '/rankings', requiresAuth })
   }
 
+  // Docs: the internal API access guide (/docs), synced with the upstream
+  // provider's documentation. It is a public page; the module flag only
+  // controls whether the nav entry is shown.
+  if (modules?.docs !== false) {
+    links.push({ title: t('Docs'), href: '/docs' })
+  }
+
   // About: labelled Contact Us for this station; the page content (including
   // the WeChat contact) is configured by the administrator.
   if (modules?.about !== false) {

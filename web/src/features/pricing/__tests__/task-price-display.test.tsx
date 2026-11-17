@@ -790,13 +790,19 @@ it('summarises the model-level token price in list and card views when ordinary 
     ).container
   )
   // Ratio 1.5 is $3 / 1M input tokens; completion ratio 4 makes output $12.
-  expect(cell.getByText('Input').parentElement).toHaveTextContent(/^Input3$/)
-  expect(cell.getByText('Output').parentElement).toHaveTextContent(/^Output12$/)
+  // Prices display per 1K tokens as a dual value (CNY first, then the
+  // configured display currency); the list cell hides currency symbols.
+  expect(cell.getByText('Input').parentElement).toHaveTextContent(
+    /^Input0\.003 · 0\.003$/
+  )
+  expect(cell.getByText('Output').parentElement).toHaveTextContent(
+    /^Output0\.012 · 0\.012$/
+  )
   expect(card.getByText('Input').parentElement).toHaveTextContent(
-    /\$3\s*\/\s*1M/
+    /¥0\.003 · \$0\.003\s*\/\s*1K/
   )
   expect(card.getByText('Output').parentElement).toHaveTextContent(
-    /\$12\s*\/\s*1M/
+    /¥0\.012 · \$0\.012\s*\/\s*1K/
   )
   expect(card.getByText('Token-based')).toBeVisible()
   expect(screen.queryByText(/Not configured/)).not.toBeInTheDocument()

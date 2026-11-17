@@ -97,11 +97,13 @@ interface StatItem {
 export function Stats(_props: StatsProps) {
   const { t } = useTranslation()
 
+  // Real counts from the live channel (178 models total:
+  // 57 text, 42 image, 54 video, 24 audio, 1 other).
   const stats: StatItem[] = [
-    { end: 68, suffix: '+', label: t('models available') },
-    { end: 27, suffix: '', label: t('image models') },
-    { end: 12, suffix: '', label: t('video models') },
-    { end: 9, suffix: '', label: t('upstream providers') },
+    { end: 178, suffix: '', label: t('models available') },
+    { end: 42, suffix: '', label: t('Image Models') },
+    { end: 54, suffix: '', label: t('Video Models') },
+    { end: 57, suffix: '', label: t('Text Models') },
   ]
 
   return (

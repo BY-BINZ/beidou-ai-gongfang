@@ -22,6 +22,7 @@ import { useTranslation } from 'react-i18next'
 
 import { AnimateInView } from '@/components/animate-in-view'
 import { Button } from '@/components/ui/button'
+import { formatDualCurrencyFromUSD, getCurrencyDisplay } from '@/lib/currency'
 
 interface PopularModelsProps {
   className?: string
@@ -33,37 +34,53 @@ interface PopularModelsProps {
 // api.dapaoai.com/pricing on 2026-11-14 07:00 (Recharge mode, /1M unit).
 // Two homepage models were delisted from that page and replaced with
 // current ones: qwen3-max -> gpt-6.1-sol, grok-4.1 -> grok-4.6.
-// kimi-k3's 充值 price (¥30/¥150) is confirmed as read but its multiple
-// over 标准 (16.7x) is anomalous — re-check before enabling the channel.
+// kimi-k3 was removed from the homepage (2026-11-17, owner decision):
+// it is not in APIMODELS and not in the relay's 178 models, so it cannot
+// be called.
 // The Doubao Seedance video models have no simple per-second price
 // (dynamic upstream expression), so they show as dynamic.
+// Prices are stored as numbers (CNY) and rendered as both CNY and points
+// (points = ¥ / usdExchangeRate * customCurrencyExchangeRate), so the
+// homepage always matches the station's configured display rates.
 export function PopularModels(_props: PopularModelsProps) {
   const { t } = useTranslation()
 
+  // Convert a CNY selling price to a dual display "¥X · 积分 Y".
+  const formatCnyDual = (cny: number): string => {
+    const { config } = getCurrencyDisplay()
+    const usd = cny / config.usdExchangeRate
+    return formatDualCurrencyFromUSD(usd, {
+      digitsLarge: 4,
+      digitsSmall: 4,
+      abbreviate: false,
+      cnyFirst: true,
+    })
+  }
+
+  // Text prices are per 1M tokens in the source table; display per 1K.
   const textModels = [
-    { name: 'claude-opus-5', input: '¥7.2', output: '¥36' },
-    { name: 'gemini-3.1-pro-preview', input: '¥5.2', output: '¥31' },
-    { name: 'deepseek-v4-pro', input: '¥10.8', output: '¥32.4' },
-    { name: 'gpt-6.1-sol', input: '¥0.9', output: '¥4.5' },
-    { name: 'grok-4.6', input: '¥1.5', output: '¥5.2' },
-    { name: 'kimi-k3', input: '¥30', output: '¥150' },
+    { name: 'claude-opus-5', inputCnyPer1M: 7.2, outputCnyPer1M: 36 },
+    { name: 'gemini-3.1-pro-preview', inputCnyPer1M: 5.2, outputCnyPer1M: 31 },
+    { name: 'deepseek-v4-pro', inputCnyPer1M: 10.8, outputCnyPer1M: 32.4 },
+    { name: 'gpt-6.1-sol', inputCnyPer1M: 0.9, outputCnyPer1M: 4.5 },
+    { name: 'grok-4.6', inputCnyPer1M: 1.5, outputCnyPer1M: 5.2 },
   ]
 
   const imageModels = [
-    { name: 'banana2-official-1k', price: '¥0.5' },
-    { name: 'banana2-official-2k', price: '¥0.8' },
-    { name: 'banana2-official-4k', price: '¥1.2' },
-    { name: 'bananaPRO', price: '¥0.48' },
-    { name: 'gemini-nano-banana-2.1', price: '¥0.18' },
+    { name: 'banana2-official-1k', priceCny: 0.5 },
+    { name: 'banana2-official-2k', priceCny: 0.8 },
+    { name: 'banana2-official-4k', priceCny: 1.2 },
+    { name: 'bananaPRO', priceCny: 0.48 },
+    { name: 'gemini-nano-banana-2.1', priceCny: 0.18 },
   ]
 
   const videoModels = [
-    { name: 'doubao-seedance-2.5', price: null },
-    { name: 'doubao-seedance-2.0', price: null },
-    { name: 'wan3.0-video', price: '¥0.7' },
-    { name: 'wan3.0-video-official 720P', price: '¥0.75' },
-    { name: 'wan3.0-video-official 1080P', price: '¥1.6' },
-    { name: 'wan3.0-fast', price: '¥0.45' },
+    { name: 'doubao-seedance-2.5', priceCny: null },
+    { name: 'doubao-seedance-2.0', priceCny: null },
+    { name: 'wan3.0-video', priceCny: 0.7 },
+    { name: 'wan3.0-video-official 720P', priceCny: 0.75 },
+    { name: 'wan3.0-video-official 1080P', priceCny: 1.6 },
+    { name: 'wan3.0-fast', priceCny: 0.45 },
   ]
 
   return (
@@ -89,8 +106,12 @@ export function PopularModels(_props: PopularModelsProps) {
                   <li key={m.name} className='flex flex-col gap-0.5'>
                     <span className='text-sm font-medium'>{m.name}</span>
                     <span className='text-muted-foreground text-xs'>
-                      {t('Input')} {m.input} / {t('Output')} {m.output} ·{' '}
-                      {t('per 1M tokens')}
+                      {t('Input')} {formatCnyDual(m.inputCnyPer1M / 1000)} /{' '}
+                      {t('{{unit}} tokens', { unit: '1K' })}
+                    </span>
+                    <span className='text-muted-foreground text-xs'>
+                      {t('Output')} {formatCnyDual(m.outputCnyPer1M / 1000)} /{' '}
+                      {t('{{unit}} tokens', { unit: '1K' })}
                     </span>
                   </li>
                 ))}
@@ -105,13 +126,10 @@ export function PopularModels(_props: PopularModelsProps) {
               </h3>
               <ul className='space-y-3'>
                 {imageModels.map((m) => (
-                  <li
-                    key={m.name}
-                    className='flex items-baseline justify-between gap-2'
-                  >
+                  <li key={m.name} className='flex flex-col gap-0.5'>
                     <span className='text-sm font-medium'>{m.name}</span>
-                    <span className='text-muted-foreground shrink-0 text-xs'>
-                      {m.price} {t('per image')}
+                    <span className='text-muted-foreground text-xs'>
+                      {formatCnyDual(m.priceCny)} / {t('per image')}
                     </span>
                   </li>
                 ))}
@@ -126,15 +144,12 @@ export function PopularModels(_props: PopularModelsProps) {
               </h3>
               <ul className='space-y-3'>
                 {videoModels.map((m) => (
-                  <li
-                    key={m.name}
-                    className='flex items-baseline justify-between gap-2'
-                  >
+                  <li key={m.name} className='flex flex-col gap-0.5'>
                     <span className='text-sm font-medium'>{m.name}</span>
-                    <span className='text-muted-foreground shrink-0 text-xs'>
-                      {m.price
-                        ? `${m.price} ${t('per second')}`
-                        : t('Dynamic pricing')}
+                    <span className='text-muted-foreground text-xs'>
+                      {m.priceCny == null
+                        ? t('Dynamic pricing')
+                        : `${formatCnyDual(m.priceCny)} / ${t('per second')}`}
                     </span>
                   </li>
                 ))}

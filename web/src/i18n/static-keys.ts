@@ -329,7 +329,7 @@ export const STATIC_I18N_KEYS = [
   'Enterprise-grade security with comprehensive permission management',
   'Global Coverage',
   'Multi-region deployment for stable global access',
-  'Developer Friendly',
+  'Easy to Connect',
   'Complete API documentation with multi-language SDK support',
   'High Performance',
   'Support for high concurrency with automatic load balancing',

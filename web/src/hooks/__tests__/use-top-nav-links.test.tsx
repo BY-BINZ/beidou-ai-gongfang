@@ -52,8 +52,16 @@ describe('useTopNavLinks', () => {
       'Console',
       'Model Square',
       'Rankings',
+      'Docs',
       'Contact Us',
     ])
+  })
+
+  it('links the docs entry to the internal API access guide', () => {
+    const links = navLinks()
+    expect(links.find((link) => link.title === 'Docs')).toMatchObject({
+      href: '/docs',
+    })
   })
 
   it('labels the about page as Contact Us and links it to /about', () => {
@@ -78,6 +86,7 @@ describe('useTopNavLinks', () => {
       console: false,
       pricing: { enabled: false, requireAuth: false },
       rankings: { enabled: false, requireAuth: false },
+      docs: false,
       about: false,
     })
     expect(links).toEqual([])

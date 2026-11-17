@@ -20,7 +20,7 @@ import {
   Zap,
   Route,
   Gauge,
-  Code,
+  Plug,
   DollarSign,
   Users,
   HeartHandshake,
@@ -105,10 +105,7 @@ export function Features(_props: FeaturesProps) {
         <div className='mt-4 flex items-center justify-center'>
           <div className='relative'>
             <div className='flex size-16 items-center justify-center rounded-2xl border border-amber-500/20 bg-amber-500/5'>
-              <Gauge
-                className='size-7 text-amber-500/70'
-                strokeWidth={1.5}
-              />
+              <Gauge className='size-7 text-amber-500/70' strokeWidth={1.5} />
             </div>
             <div className='absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full bg-amber-500'>
               <svg
@@ -132,14 +129,16 @@ export function Features(_props: FeaturesProps) {
     {
       id: 'developer',
       num: '04',
-      title: t('Developer Friendly'),
-      desc: t('Compatible API routes for common AI application workflows'),
+      title: t('Easy to Connect'),
+      desc: t(
+        'Full API, SDK and docs included — connect your store or team tools in minutes, no tech skills needed.'
+      ),
       span: 'md:col-span-2',
-      icon: <Code className='size-4 text-amber-400' />,
+      icon: <Plug className='size-4 text-amber-400' />,
       visual: (
         <div className='mt-4 flex items-center gap-3'>
           <div className='flex -space-x-2'>
-            {['API', 'SDK', 'CLI', 'Docs'].map((n) => (
+            {['API', 'SDK', 'Docs', 'Key'].map((n) => (
               <div
                 key={n}
                 className='border-background from-muted to-muted/60 text-muted-foreground flex size-8 items-center justify-center rounded-full border-2 bg-gradient-to-br text-[9px] font-bold'
@@ -149,8 +148,8 @@ export function Features(_props: FeaturesProps) {
             ))}
           </div>
           <div className='text-muted-foreground flex items-center gap-1.5 text-xs'>
-            <Code className='size-3.5 text-amber-500' />
-            {t('Multi-protocol Compatible')}
+            <Plug className='size-3.5 text-amber-500' />
+            {t('Works with Your Tools')}
           </div>
         </div>
       ),
@@ -175,9 +174,9 @@ export function Features(_props: FeaturesProps) {
     },
     {
       icon: <HeartHandshake className='size-5' strokeWidth={1.5} />,
-      title: t('Open Source & Self-Hosted'),
+      title: t('Your Data Stays Yours'),
       desc: t(
-        'Built on open-source New API — self-hosted, your data stays with you.'
+        'Your data stays in your own hands — secure and private, never shared with anyone else.'
       ),
     },
   ]

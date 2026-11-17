@@ -20,6 +20,7 @@ import dayjs from '@/lib/dayjs'
 
 import {
   formatCurrencyFromUSD,
+  formatDualCurrencyFromUSD,
   formatQuotaWithCurrency,
   getCurrencyDisplay,
   getCurrencyFractionDigits,
@@ -88,6 +89,22 @@ export function formatCurrencyUSD(value: number | null | undefined): string {
  */
 export function formatQuota(quota: number): string {
   return formatQuotaWithCurrency(quota, {
+    digitsLarge: 2,
+    digitsSmall: 4,
+    abbreviate: true,
+  })
+}
+
+/**
+ * Format quota as both the configured display currency (points) and CNY,
+ * joined with " · " (points first, e.g. "积分 39,984.1 · ¥1,459.42").
+ * Used for balance and usage so customers see the points cost and the RMB
+ * cost together. Quota is stored in units where `quotaPerUnit` equals 1 USD.
+ */
+export function formatDualQuota(quota: number): string {
+  const { config } = getCurrencyDisplay()
+  const amountUSD = quota / config.quotaPerUnit
+  return formatDualCurrencyFromUSD(amountUSD, {
     digitsLarge: 2,
     digitsSmall: 4,
     abbreviate: true,
