@@ -926,3 +926,16 @@ func failTasksFromPoll(ctx context.Context, adaptor TaskPollingAdaptor, tasks []
 	}
 	return firstErr
 }
+
+// PollOwnedTask uses the same status compare-and-swap and terminal billing as the background poller.
+func PollOwnedTask(ctx context.Context, adaptor TaskPollingAdaptor, task *model.Task) error {
+	if task.Status == model.TaskStatusSuccess || task.Status == model.TaskStatusFailure {
+		return nil
+	}
+	ch, err := model.GetChannelById(task.ChannelId, true)
+	if err != nil {
+		return err
+	}
+	adaptor.Init(&relaycommon.RelayInfo{ChannelMeta: &relaycommon.ChannelMeta{ChannelType: ch.Type, ChannelId: ch.Id, ChannelBaseUrl: ch.GetBaseURL(), ChannelSetting: ch.GetSetting(), HeadersOverride: ch.GetHeaderOverride(), ApiKey: task.PrivateData.Key}})
+	return updateVideoSingleTask(ctx, adaptor, ch, task.GetUpstreamTaskID(), map[string]*model.Task{task.GetUpstreamTaskID(): task})
+}
