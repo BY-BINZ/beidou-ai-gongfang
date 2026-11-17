@@ -21,7 +21,7 @@ import { useTranslation } from 'react-i18next'
 
 import { IconBadge, type IconBadgeTone } from '@/components/ui/icon-badge'
 import { Skeleton } from '@/components/ui/skeleton'
-import { formatQuota } from '@/lib/format'
+import { formatDualQuota, formatQuota } from '@/lib/format'
 
 import type { UserWalletData } from '../types'
 
@@ -55,7 +55,9 @@ export function WalletStatsCard(props: WalletStatsCardProps) {
   }[] = [
     {
       label: t('Current Balance'),
-      value: formatQuota(props.user?.quota ?? 0),
+      // Dual display: points + RMB (e.g. 积分 5,000 · ¥182.50), so the
+      // customer sees both the money and the points.
+      value: formatDualQuota(props.user?.quota ?? 0),
       description: t('Remaining quota'),
       icon: WalletCards,
       tone: 'success',

@@ -34,6 +34,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { getCurrencyDisplay } from '@/lib/currency'
 import { formatNumber } from '@/lib/format'
 import { cn } from '@/lib/utils'
 
@@ -52,6 +53,21 @@ import type {
   WaffoPayMethod,
 } from '../types'
 import { CreemProductsSection } from './creem-products-section'
+
+// Manual WeChat top-up tiers (owner decision 2026-11-17/18): the station
+// takes no online payment, so the Wallet shows these tiers + the WeChat
+// QR instead of the preset-amount buttons. All amounts are RMB —
+// customers pay in CNY on WeChat. 1 point = ¥0.0365 (1 USD = 200
+// points, $1 = ¥7.3), points rounded to the nearest whole dollar.
+// Keep in sync with the Contact page (/about).
+const MANUAL_TOPUP_TIERS = [
+  { rmb: 1000, points: 27400 },
+  { rmb: 3000, points: 82200, recommended: true },
+  { rmb: 5000, points: 137000 },
+  { rmb: 10000, points: 274000 },
+]
+const WECHAT_PAY_QR_URL =
+  'https://www.beidouku.com/uploads/slot-1794862042878-948f16b5.webp'
 
 interface RechargeFormCardProps {
   topupInfo: TopupInfo | null
@@ -136,6 +152,10 @@ export function RechargeFormCard({
     enableWaffoTopup ||
     enableWaffoPancakeTopup
   const hasAnyTopup = hasConfigurableTopup || enableCreemTopup
+  // Points unit shown on the manual top-up tiers (admin-configured
+  // custom currency symbol, currently '积分').
+  const { config: currencyConfig } = getCurrencyDisplay()
+  const currencySymbol = currencyConfig.customCurrencySymbol
   const hasStandardPaymentMethods =
     Array.isArray(topupInfo?.pay_methods) && topupInfo.pay_methods.length > 0
   const hasWaffoPaymentMethods =
@@ -488,13 +508,64 @@ export function RechargeFormCard({
           )}
         </div>
       ) : (
-        <Alert>
-          <AlertDescription>
-            {t(
-              'Online topup is not enabled. Please use redemption code or contact administrator.'
-            )}
-          </AlertDescription>
-        </Alert>
+        <div className='space-y-4'>
+          {/* Manual WeChat top-up, shown when no online payment gateway
+              is enabled. The customer pays on WeChat and the admin adds
+              the balance by hand. */}
+          <div className='space-y-2.5'>
+            <Label className='text-muted-foreground text-xs font-medium tracking-wider uppercase'>
+              {t('WeChat top-up')}
+            </Label>
+            <div className='grid grid-cols-2 gap-2 sm:grid-cols-2 lg:grid-cols-4'>
+              {MANUAL_TOPUP_TIERS.map((tier) => (
+                <div
+                  key={tier.rmb}
+                  className={cn(
+                    'rounded-lg border p-3 text-center',
+                    tier.recommended
+                      ? 'border-primary bg-primary/5'
+                      : 'border-muted'
+                  )}
+                >
+                  {tier.recommended && (
+                    <span className='bg-primary text-primary-foreground mb-1.5 inline-block rounded-full px-2 py-0.5 text-[11px] font-medium'>
+                      {t('Recommended')}
+                    </span>
+                  )}
+                  <div className='text-lg font-bold'>
+                    ¥{formatNumber(tier.rmb)}
+                  </div>
+                  <div className='text-primary text-sm font-semibold'>
+                    {formatNumber(tier.points)} {currencySymbol}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <p className='text-muted-foreground text-xs'>
+              {t('Custom amount: ¥100–¥10000. Manual top-up, no online payment.')}
+            </p>
+          </div>
+          <div className='flex flex-wrap items-start gap-4 rounded-lg border p-4'>
+            <img
+              src={WECHAT_PAY_QR_URL}
+              alt={t('WeChat Pay')}
+              className='h-auto w-32 shrink-0 rounded-md border'
+            />
+            <div className='min-w-0 flex-1 space-y-1.5 text-sm'>
+              <p>
+                {t('WeChat ID')}:{' '}
+                <span className='font-semibold text-[#07C160]'>
+                  bing123023
+                </span>
+              </p>
+              <p className='text-muted-foreground'>
+                {t(
+                  'Add us on WeChat, tell us the amount, pay, and we add the balance manually.'
+                )}
+              </p>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Creem Products Section */}

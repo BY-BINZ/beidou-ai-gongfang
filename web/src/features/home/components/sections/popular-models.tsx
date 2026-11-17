@@ -28,20 +28,15 @@ interface PopularModelsProps {
   className?: string
 }
 
-// Model names and prices are the real upstream names and the station's
-// selling prices (CNY, dapaoai 充值 column per the 2026-11-14 decision).
-// Source: BEIDOU-PRICING-CONFIG.md, from the full live read of
-// api.dapaoai.com/pricing on 2026-11-14 07:00 (Recharge mode, /1M unit).
-// Two homepage models were delisted from that page and replaced with
-// current ones: qwen3-max -> gpt-6.1-sol, grok-4.1 -> grok-4.6.
-// kimi-k3 was removed from the homepage (2026-11-17, owner decision):
-// it is not in APIMODELS and not in the relay's 178 models, so it cannot
-// be called.
-// The Doubao Seedance video models have no simple per-second price
-// (dynamic upstream expression), so they show as dynamic.
-// Prices are stored as numbers (CNY) and rendered as both CNY and points
-// (points = ¥ / usdExchangeRate * customCurrencyExchangeRate), so the
-// homepage always matches the station's configured display rates.
+// Model names and prices are the relay's own selling prices, so the
+// homepage always shows what a customer actually pays here.
+// Source: the relay's live model_pricing snapshot (2026-11-17 fill,
+// 1 point = $0.005, $1 = ¥7.3). Display rule (owner, 2026-11-18):
+// show the cheap default, not the expensive tier — image models are
+// the 1K (default) price, nothing over ¥0.5 per image, no 4K; video
+// models are the 720P (default) per-second price, cheapest big-brand
+// models first. Text prices are per 1M tokens in the source table;
+// display per 1K.
 export function PopularModels(_props: PopularModelsProps) {
   const { t } = useTranslation()
 
@@ -67,20 +62,19 @@ export function PopularModels(_props: PopularModelsProps) {
   ]
 
   const imageModels = [
-    { name: 'banana2-official-1k', priceCny: 0.5 },
-    { name: 'banana2-official-2k', priceCny: 0.8 },
-    { name: 'banana2-official-4k', priceCny: 1.2 },
-    { name: 'bananaPRO', priceCny: 0.48 },
-    { name: 'gemini-nano-banana-2.1', priceCny: 0.18 },
+    { name: 'gpt-image-2.5-flare', priceCny: 0.08 },
+    { name: 'doubao-seedream-5-5', priceCny: 0.26 },
+    { name: 'gpt-image-2.6-sunburst', priceCny: 0.3 },
+    { name: 'qwen3-image', priceCny: 0.4 },
+    { name: 'nano-banana-2-1', priceCny: 0.5 },
   ]
 
   const videoModels = [
-    { name: 'doubao-seedance-2.5', priceCny: null },
-    { name: 'doubao-seedance-2.0', priceCny: null },
-    { name: 'wan3.0-video', priceCny: 0.7 },
-    { name: 'wan3.0-video-official 720P', priceCny: 0.75 },
-    { name: 'wan3.0-video-official 1080P', priceCny: 1.6 },
-    { name: 'wan3.0-fast', priceCny: 0.45 },
+    { name: 'kling-4.0-flash', priceCny: 0.37 },
+    { name: 'grok-imagine-video-1.5', priceCny: 0.37 },
+    { name: 'grok-video-3-10s', priceCny: 0.44 },
+    { name: 'kling-4.0', priceCny: 0.58 },
+    { name: 'wan-3.0-video', priceCny: 0.7 },
   ]
 
   return (
@@ -129,7 +123,7 @@ export function PopularModels(_props: PopularModelsProps) {
                   <li key={m.name} className='flex flex-col gap-0.5'>
                     <span className='text-sm font-medium'>{m.name}</span>
                     <span className='text-muted-foreground text-xs'>
-                      {formatCnyDual(m.priceCny)} / {t('per image')}
+                      {formatCnyDual(m.priceCny)} / {t('per image')} · 1K
                     </span>
                   </li>
                 ))}
@@ -149,7 +143,7 @@ export function PopularModels(_props: PopularModelsProps) {
                     <span className='text-muted-foreground text-xs'>
                       {m.priceCny == null
                         ? t('Dynamic pricing')
-                        : `${formatCnyDual(m.priceCny)} / ${t('per second')}`}
+                        : `${formatCnyDual(m.priceCny)} / ${t('per second')} · 720P`}
                     </span>
                   </li>
                 ))}

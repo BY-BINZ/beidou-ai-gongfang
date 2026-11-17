@@ -90,10 +90,10 @@ export function useTopNavLinks(): TopNavLink[] {
     links.push({ title: t('Docs'), href: '/docs' })
   }
 
-  // About: labelled Contact Us for this station; the page content (including
-  // the WeChat contact) is configured by the administrator.
+  // About: labelled Top-up for this station; the page content (the
+  // WeChat recharge + top-up tiers) is configured by the administrator.
   if (modules?.about !== false) {
-    links.push({ title: t('Contact Us'), href: '/about' })
+    links.push({ title: t('Top-up'), href: '/about' })
   }
 
   return links
