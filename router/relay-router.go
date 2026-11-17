@@ -77,7 +77,10 @@ func SetRelayRouter(router *gin.Engine) {
 		// response.create event; each event runs the ordinary request limiter.
 		relayV1Router.GET("/responses", controller.ResponsesWebSocket)
 	}
+	relayV1Router.GET("/images/generations", controller.APIMODELSImageFetch)
+	relayV1Router.GET("/images/generations/:task_id", controller.APIMODELSImageFetch)
 	relayV1Router.Use(middleware.ModelRequestRateLimit())
+	relayV1Router.POST("/files", controller.APIMODELSFiles)
 	{
 		// WebSocket 路由（统一到 Relay）
 		wsRouter := relayV1Router.Group("")
@@ -103,7 +106,7 @@ func SetRelayRouter(router *gin.Engine) {
 			controller.Relay(c, types.RelayFormatOpenAI)
 		})
 		httpRouter.POST("/chat/completions", func(c *gin.Context) {
-			controller.Relay(c, types.RelayFormatOpenAI)
+			controller.APIMODELSImage(c, func(c *gin.Context) { controller.Relay(c, types.RelayFormatOpenAI) })
 		})
 
 		// response related routes
@@ -168,7 +171,6 @@ func SetRelayRouter(router *gin.Engine) {
 		// not implemented
 		httpRouter.POST("/images/variations", controller.RelayNotImplemented)
 		httpRouter.GET("/files", controller.RelayNotImplemented)
-		httpRouter.POST("/files", controller.RelayNotImplemented)
 		httpRouter.DELETE("/files/:id", controller.RelayNotImplemented)
 		httpRouter.GET("/files/:id/content", controller.RelayNotImplemented)
 		httpRouter.POST("/fine-tunes", controller.RelayNotImplemented)

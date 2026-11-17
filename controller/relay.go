@@ -3,6 +3,7 @@ package controller
 import (
 	"errors"
 	"fmt"
+	"github.com/QuantumNous/new-api/relay/channel/task/apimodels"
 	"io"
 	"log"
 	"net/http"
@@ -787,6 +788,9 @@ func executeTaskSubmissionWith(
 
 	stage = "insert"
 	task := model.InitTask(result.Platform, relayInfo)
+	if result.Platform == apimodels.Platform {
+		task.PrivateData.Key = relayInfo.ApiKey
+	}
 	task.PrivateData.Execution = service.TaskExecutionSnapshotFromContext(c)
 	task.PrivateData.UpstreamTaskID = result.UpstreamTaskID
 	task.PrivateData.BillingSource = relayInfo.BillingSource
@@ -898,6 +902,10 @@ func executeTaskSubmissionWith(
 }
 
 func presentTaskSubmission(c *gin.Context, outcome *taskSubmissionOutcome) {
+	if outcome.Task.Platform == apimodels.Platform {
+		c.JSON(http.StatusOK, gin.H{"code": 200, "data": gin.H{"taskId": outcome.Task.TaskID}})
+		return
+	}
 	diagnostics := newTaskPluginSubmitDiagnostics(c)
 	// A native route that relayed the vendor's event stream has answered.
 	if c.Writer.Written() {
