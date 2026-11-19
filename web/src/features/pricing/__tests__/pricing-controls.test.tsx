@@ -304,10 +304,11 @@ describe('pricing controls', () => {
     ).toBeVisible()
   })
 
-  it('changes the token unit and keeps the selected unit pressed when clicked again', async () => {
+  it('offers only the /1K token unit on the model square, never /1M', async () => {
     const props = toolbarProps()
     const user = userEvent.setup()
     const { rerender } = render(<PricingToolbar {...props} />)
+    expect(screen.queryByRole('button', { name: '/1M' })).toBeNull()
     await user.click(screen.getByRole('button', { name: '/1K' }))
     expect(props.onTokenUnitChange).toHaveBeenCalledWith('K')
     rerender(<PricingToolbar {...props} tokenUnit='K' />)
