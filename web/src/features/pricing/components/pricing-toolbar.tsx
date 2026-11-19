@@ -137,7 +137,7 @@ export function PricingToolbar(props: PricingToolbarProps) {
           <ToggleGroup
             value={[props.tokenUnit]}
             onValueChange={(values) => {
-              if (values[0] === 'M' || values[0] === 'K') {
+              if (values[0] === 'K') {
                 props.onTokenUnitChange(values[0])
               }
             }}
@@ -145,7 +145,9 @@ export function PricingToolbar(props: PricingToolbarProps) {
             size='sm'
             aria-label={t('Token unit')}
           >
-            <ToggleGroupItem value='M'>/1M</ToggleGroupItem>
+            {/* Model square shows prices per 1K only: customers do not
+                understand 1M, and the page already forces the K unit
+                (DEFAULT_TOKEN_UNIT), so the /1M option was dead UI. */}
             <ToggleGroupItem value='K'>/1K</ToggleGroupItem>
           </ToggleGroup>
 

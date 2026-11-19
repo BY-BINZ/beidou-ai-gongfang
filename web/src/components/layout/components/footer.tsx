@@ -285,17 +285,25 @@ export function Footer(props: FooterProps) {
           )}
         </div>
 
-        {/* Copyright + optional legal links inline on the left, project
-            attribution on the right; wraps on narrow screens. */}
-        <div className='border-border/30 mt-12 flex flex-col items-center justify-between gap-x-3 gap-y-2 border-t pt-6 sm:flex-row'>
-          <div className='text-muted-foreground/40 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs sm:justify-start'>
-            <span>
-              &copy; {currentYear} {displayName}.{' '}
-              {props.copyright ?? t('footer.defaultCopyright')}
+        {/* Single copyright line: station copyright + upstream attribution
+            in one statement (no second © / rights line). Legal links stay
+            inline after it; wraps on narrow screens. */}
+        <div className='border-border/30 mt-12 flex flex-col items-center justify-center gap-x-3 gap-y-2 border-t pt-6 text-center text-xs sm:flex-row'>
+          <span className='text-muted-foreground/45'>
+            &copy; {currentYear} {displayName}.{' '}
+            {props.copyright ?? t('footer.defaultCopyright')}{' '}
+            <span aria-hidden='true' className='text-muted-foreground/30'>
+              ·
+            </span>{' '}
+            {/* Owner decision (2026-11-19 patrol): attribution text stays
+                (AGPL notice), hyperlink already removed; the duplicate
+                "© … All rights reserved" line is merged into this one. */}
+            <span className='text-foreground/70 font-medium'>
+              {t('New API')}
             </span>
-            <LegalLinks leadingSeparator />
-          </div>
-          <ProjectAttribution currentYear={currentYear} />
+            . {t(NEW_API_FOOTER_ATTRIBUTION_KEY)}
+          </span>
+          <LegalLinks leadingSeparator />
         </div>
       </div>
     </footer>
