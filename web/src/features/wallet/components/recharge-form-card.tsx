@@ -59,8 +59,12 @@ import { CreemProductsSection } from './creem-products-section'
 // QR instead of the preset-amount buttons. All amounts are RMB —
 // customers pay in CNY on WeChat. 1 point = ¥0.0365 (1 USD = 200
 // points, $1 = ¥7.3), points rounded to the nearest whole dollar.
+// Small tiers (¥10/¥50/¥100) restored 2026-11-21 (owner decision).
 // Keep in sync with the Contact page (/about).
 const MANUAL_TOPUP_TIERS = [
+  { rmb: 10, points: 300 },
+  { rmb: 50, points: 1400 },
+  { rmb: 100, points: 2700 },
   { rmb: 1000, points: 27400 },
   { rmb: 3000, points: 82200, recommended: true },
   { rmb: 5000, points: 137000 },
@@ -542,7 +546,7 @@ export function RechargeFormCard({
               ))}
             </div>
             <p className='text-muted-foreground text-xs'>
-              {t('Custom amount: ¥100–¥10000. Manual top-up, no online payment.')}
+              {t('Custom amount: ¥10–¥10000. Manual top-up, no online payment.')}
             </p>
           </div>
           <div className='flex flex-wrap items-start gap-4 rounded-lg border p-4'>

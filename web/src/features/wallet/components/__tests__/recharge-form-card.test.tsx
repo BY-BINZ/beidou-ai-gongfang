@@ -100,8 +100,11 @@ describe('RechargeFormCard manual WeChat top-up', () => {
     renderCard(topupInfoDisabled)
     // Section heading.
     expect(screen.getByText('微信充值')).toBeVisible()
-    // All four RMB tiers: amount + points. No USD anywhere.
+    // All seven RMB tiers: amount + points. No USD anywhere.
     for (const [rmb, points] of [
+      ['¥10', '300 积分'],
+      ['¥50', '1,400 积分'],
+      ['¥100', '2,700 积分'],
       ['¥1,000', '27,400 积分'],
       ['¥3,000', '82,200 积分'],
       ['¥5,000', '137,000 积分'],
@@ -115,7 +118,7 @@ describe('RechargeFormCard manual WeChat top-up', () => {
     expect(screen.getByText('推荐')).toBeVisible()
     // Custom amount note.
     expect(
-      screen.getByText('自定义金额：¥100–¥10000，人工充值，不走在线支付。')
+      screen.getByText('自定义金额：¥10–¥10000，人工充值，不走在线支付。')
     ).toBeVisible()
     // WeChat QR + ID.
     expect(screen.getByAltText('微信支付')).toHaveAttribute(
