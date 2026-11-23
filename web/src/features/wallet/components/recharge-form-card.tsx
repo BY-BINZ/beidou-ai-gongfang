@@ -54,17 +54,15 @@ import type {
 } from '../types'
 import { CreemProductsSection } from './creem-products-section'
 
-// Manual WeChat top-up tiers (owner decision 2026-11-17/18): the station
-// takes no online payment, so the Wallet shows these tiers + the WeChat
-// QR instead of the preset-amount buttons. All amounts are RMB —
-// customers pay in CNY on WeChat. 1 point = ¥0.0365 (1 USD = 200
-// points, $1 = ¥7.3), points rounded to the nearest whole dollar.
-// Keep in sync with the Contact page (/about).
+// Manual WeChat top-up tiers aligned with Beidou AI Studio points system
+// (¥99 = 1,500 points base, progressive volume bonus up to ¥9,980 = 200,000 points).
+// Keep in sync with the public Recharge page (/about).
 const MANUAL_TOPUP_TIERS = [
-  { rmb: 1000, points: 27400 },
-  { rmb: 3000, points: 82200, recommended: true },
-  { rmb: 5000, points: 137000 },
-  { rmb: 10000, points: 274000 },
+  { rmb: 99, points: 1500, tag: '入门体验' },
+  { rmb: 500, points: 8000, tag: '标准算力' },
+  { rmb: 1000, points: 17000, tag: '进阶常用', recommended: true },
+  { rmb: 2980, points: 54000, tag: '商业团队' },
+  { rmb: 9980, points: 200000, tag: '企业定制' },
 ]
 const WECHAT_PAY_QR_URL =
   'https://www.beidouku.com/uploads/slot-1794862042878-948f16b5.webp'
@@ -516,7 +514,7 @@ export function RechargeFormCard({
             <Label className='text-muted-foreground text-xs font-medium tracking-wider uppercase'>
               {t('WeChat top-up')}
             </Label>
-            <div className='grid grid-cols-2 gap-2 sm:grid-cols-2 lg:grid-cols-4'>
+            <div className='grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5'>
               {MANUAL_TOPUP_TIERS.map((tier) => (
                 <div
                   key={tier.rmb}
@@ -527,9 +525,13 @@ export function RechargeFormCard({
                       : 'border-muted'
                   )}
                 >
-                  {tier.recommended && (
+                  {tier.recommended ? (
                     <span className='bg-primary text-primary-foreground mb-1.5 inline-block rounded-full px-2 py-0.5 text-[11px] font-medium'>
                       {t('Recommended')}
+                    </span>
+                  ) : (
+                    <span className='text-muted-foreground mb-1.5 inline-block text-[11px] font-medium'>
+                      {tier.tag}
                     </span>
                   )}
                   <div className='text-lg font-bold'>
@@ -542,7 +544,7 @@ export function RechargeFormCard({
               ))}
             </div>
             <p className='text-muted-foreground text-xs'>
-              {t('Custom amount: ¥100–¥10000. Manual top-up, no online payment.')}
+              {t('Custom amount: ¥99–¥9,980. Manual top-up, no online payment.')}
             </p>
           </div>
           <div className='flex flex-wrap items-start gap-4 rounded-lg border p-4'>

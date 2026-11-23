@@ -83,9 +83,11 @@ describe('Hero', () => {
       screen.getByText('Only the strongest model in each category')
     ).toBeInTheDocument()
     expect(screen.getByText('Photographer picks')).toBeInTheDocument()
-    expect(screen.getByText('Qwen Image 3.0')).toBeInTheDocument()
+    expect(screen.getByText('Google Gemini 3.8 Flash')).toBeInTheDocument()
     expect(
-      screen.getByText('Best at lingerie and lace reproduction')
+      screen.getByText(
+        'Best at prompt engineering, copywriting and storyboard analysis'
+      )
     ).toBeInTheDocument()
     expect(screen.getByText('Nano Banana 2.1')).toBeInTheDocument()
     expect(screen.getByText('GPT Image 2.6 Sunburst')).toBeInTheDocument()
@@ -95,8 +97,9 @@ describe('Hero', () => {
       screen.getByText('Three plans · top up via WeChat')
     ).toBeInTheDocument()
     expect(screen.getByText('¥99 Starter')).toBeInTheDocument()
-    expect(screen.getByText('¥2980 Standard')).toBeInTheDocument()
-    expect(screen.getByText('¥10000 Large')).toBeInTheDocument()
+    expect(screen.getByText('¥1000 Standard')).toBeInTheDocument()
+    expect(screen.getByText('¥2980 Team')).toBeInTheDocument()
+    expect(screen.getByText('¥9980 Enterprise')).toBeInTheDocument()
     expect(
       screen.getByText('Pay as you go · failed calls are not charged')
     ).toBeInTheDocument()

@@ -17,18 +17,18 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 For commercial licensing, please contact support@quantumnous.com
 */
 import { Link } from '@tanstack/react-router'
-import { Clapperboard, RefreshCw, Shirt, Wand2 } from 'lucide-react'
+import { Clapperboard, RefreshCw, Sparkles, Wand2 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 // Merchant-facing showcase for the hero: what a commercial photographer
-// picks for each category, plus the three recharge plans. No code — the
+// picks for each category, plus the recharge plans. No code — the
 // audience is e-commerce merchants, not developers. Model names are
 // commercial names (proper nouns, not translated); the reasons are.
 const PICKS = [
   {
-    name: 'Qwen Image 3.0',
-    reasonKey: 'Best at lingerie and lace reproduction',
-    icon: <Shirt className='size-4 text-rose-500' />,
+    name: 'Google Gemini 3.8 Flash',
+    reasonKey: 'Best at prompt engineering, copywriting and storyboard analysis',
+    icon: <Sparkles className='size-4 text-emerald-500' />,
   },
   {
     name: 'Nano Banana 2.1',
@@ -49,8 +49,9 @@ const PICKS = [
 
 const PLANS = [
   { key: '¥99 Starter', highlight: false },
-  { key: '¥2980 Standard', highlight: true },
-  { key: '¥10000 Large', highlight: false },
+  { key: '¥1000 Standard', highlight: true },
+  { key: '¥2980 Team', highlight: false },
+  { key: '¥9980 Enterprise', highlight: false },
 ]
 
 interface HeroShowcaseProps {
