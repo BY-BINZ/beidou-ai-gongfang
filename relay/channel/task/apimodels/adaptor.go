@@ -50,6 +50,9 @@ func (*Adaptor) ValidateRequestAndSetAction(c *gin.Context, info *relaycommon.Re
 	if _, err := imageRequestBody(c, info); err != nil {
 		return service.TaskErrorWrapperLocal(err, "invalid_image_request", http.StatusBadRequest)
 	}
+	if info.TaskRelayInfo == nil {
+		info.TaskRelayInfo = &relaycommon.TaskRelayInfo{}
+	}
 	info.Action = "image"
 	return nil
 }

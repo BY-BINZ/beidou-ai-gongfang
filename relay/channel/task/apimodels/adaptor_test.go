@@ -44,7 +44,7 @@ func TestImageModelsRouteAndSubmit(t *testing.T) {
 				}
 				c.Request = httptest.NewRequest(http.MethodPost, path, strings.NewReader(input))
 				c.Request.Header.Set("Content-Type", "application/json")
-				info := &relaycommon.RelayInfo{OriginModelName: name, ChannelMeta: &relaycommon.ChannelMeta{ChannelBaseUrl: upstream.URL, ApiKey: "key"}}
+				info := &relaycommon.RelayInfo{OriginModelName: name, ChannelMeta: &relaycommon.ChannelMeta{ChannelBaseUrl: upstream.URL, ApiKey: "key"}, TaskRelayInfo: &relaycommon.TaskRelayInfo{}}
 				a := &Adaptor{}
 				body, e := a.BuildRequestBody(c, info)
 				require.NoError(t, e)
@@ -93,7 +93,7 @@ func TestChatImagePromptValidation(t *testing.T) {
 		c, _ := gin.CreateTestContext(httptest.NewRecorder())
 		c.Request = httptest.NewRequest(http.MethodPost, "/v1/chat/completions", strings.NewReader(tc.body))
 		c.Request.Header.Set("Content-Type", "application/json")
-		info := &relaycommon.RelayInfo{OriginModelName: "gemini-3-pro-image", ChannelMeta: &relaycommon.ChannelMeta{ChannelBaseUrl: "https://api.apimodels.app"}}
+		info := &relaycommon.RelayInfo{OriginModelName: "gemini-3-pro-image", ChannelMeta: &relaycommon.ChannelMeta{ChannelBaseUrl: "https://api.apimodels.app"}, TaskRelayInfo: &relaycommon.TaskRelayInfo{}}
 		adaptor := &Adaptor{}
 		err := adaptor.ValidateRequestAndSetAction(c, info)
 		if tc.wantPrompt == "" {
