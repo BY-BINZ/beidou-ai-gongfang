@@ -22,59 +22,53 @@ import { useTranslation } from 'react-i18next'
 
 import { AnimateInView } from '@/components/animate-in-view'
 import { Button } from '@/components/ui/button'
-import { formatDualCurrencyFromUSD, getCurrencyDisplay } from '@/lib/currency'
+import { getCurrencyDisplay } from '@/lib/currency'
 
 interface PopularModelsProps {
   className?: string
 }
 
-// Model names and prices are the relay's own selling prices, so the
-// homepage always shows what a customer actually pays here.
-// Source: the relay's live model_pricing snapshot (2026-11-17 fill,
-// 1 point = $0.005, $1 = ¥7.3). Display rule (owner, 2026-11-18):
-// show the cheap default, not the expensive tier — image models are
-// the 1K (default) price, nothing over ¥0.5 per image, no 4K; video
-// models are the 720P (default) per-second price, cheapest big-brand
-// models first. Text prices are per 1M tokens in the source table;
-// display per 1K.
+// Pure points display (no RMB ¥ shown anywhere).
+// Image models use real APIMODELS 1K upstream USD costs × 300 (= 2x profit
+// even on the ¥9,980 enterprise tier, 2.7x on ¥99 tier). 2K / 4K scale up
+// according to user selection in the canvas or API call.
 export function PopularModels(_props: PopularModelsProps) {
   const { t } = useTranslation()
+  const { config } = getCurrencyDisplay()
+  const unitLabel = config.customCurrencySymbol || '积分'
 
-  // Convert a CNY selling price to a dual display "¥X · 积分 Y".
-  const formatCnyDual = (cny: number): string => {
-    const { config } = getCurrencyDisplay()
-    const usd = cny / config.usdExchangeRate
-    return formatDualCurrencyFromUSD(usd, {
-      digitsLarge: 4,
-      digitsSmall: 4,
-      abbreviate: false,
-      cnyFirst: true,
-    })
+  const formatPoints = (pts: number): string => {
+    const clean = Number.isInteger(pts)
+      ? String(pts)
+      : Number(pts.toFixed(3)).toString()
+    return `${clean} ${unitLabel}`
   }
 
-  // Text prices are per 1M tokens in the source table; display per 1K.
+  // Text models: pure points per 1K tokens.
   const textModels = [
-    { name: 'claude-opus-5', inputCnyPer1M: 7.2, outputCnyPer1M: 36 },
-    { name: 'gemini-3.1-pro-preview', inputCnyPer1M: 5.2, outputCnyPer1M: 31 },
-    { name: 'deepseek-v4-pro', inputCnyPer1M: 10.8, outputCnyPer1M: 32.4 },
-    { name: 'gpt-6.1-sol', inputCnyPer1M: 0.9, outputCnyPer1M: 4.5 },
-    { name: 'grok-4.6', inputCnyPer1M: 1.5, outputCnyPer1M: 5.2 },
+    { name: 'gemini-3.8-flash', inputPtsPer1K: 0.06, outputPtsPer1K: 0.28 },
+    { name: 'gpt-6.1-sol', inputPtsPer1K: 0.03, outputPtsPer1K: 0.13 },
+    { name: 'grok-4.6', inputPtsPer1K: 0.05, outputPtsPer1K: 0.15 },
+    { name: 'claude-opus-5', inputPtsPer1K: 0.2, outputPtsPer1K: 1.0 },
+    { name: 'deepseek-v4-pro', inputPtsPer1K: 0.3, outputPtsPer1K: 0.9 },
   ]
 
+  // Image models: 1K default low-entry pure points (real APIMODELS USD × 300).
   const imageModels = [
-    { name: 'gpt-image-2.5-flare', priceCny: 0.08 },
-    { name: 'doubao-seedream-5-5', priceCny: 0.26 },
-    { name: 'gpt-image-2.6-sunburst', priceCny: 0.3 },
-    { name: 'qwen3-image', priceCny: 0.4 },
-    { name: 'nano-banana-2-1', priceCny: 0.5 },
+    { name: 'gpt-image-2.6-sunburst', points: 6 },
+    { name: 'gpt-image-2.6-flare', points: 6 },
+    { name: 'nano-banana-2-1', points: 7 },
+    { name: 'gpt-image-2', points: 8 },
+    { name: 'gemini-3.1-flash-image-preview', points: 15 },
   ]
 
+  // Video models: 720P default pure points per second.
   const videoModels = [
-    { name: 'kling-4.0-flash', priceCny: 0.37 },
-    { name: 'grok-imagine-video-1.5', priceCny: 0.37 },
-    { name: 'grok-video-3-10s', priceCny: 0.44 },
-    { name: 'kling-4.0', priceCny: 0.58 },
-    { name: 'wan-3.0-video', priceCny: 0.7 },
+    { name: 'kling-4.0-flash', points: 11 },
+    { name: 'grok-imagine-video-1.5', points: 11 },
+    { name: 'grok-video-3-10s', points: 13 },
+    { name: 'kling-4.0', points: 17 },
+    { name: 'wan-3.0-video', points: 20 },
   ]
 
   return (
@@ -100,11 +94,11 @@ export function PopularModels(_props: PopularModelsProps) {
                   <li key={m.name} className='flex flex-col gap-0.5'>
                     <span className='text-sm font-medium'>{m.name}</span>
                     <span className='text-muted-foreground text-xs'>
-                      {t('Input')} {formatCnyDual(m.inputCnyPer1M / 1000)} /{' '}
+                      {t('Input')} {formatPoints(m.inputPtsPer1K)} /{' '}
                       {t('{{unit}} tokens', { unit: '1K' })}
                     </span>
                     <span className='text-muted-foreground text-xs'>
-                      {t('Output')} {formatCnyDual(m.outputCnyPer1M / 1000)} /{' '}
+                      {t('Output')} {formatPoints(m.outputPtsPer1K)} /{' '}
                       {t('{{unit}} tokens', { unit: '1K' })}
                     </span>
                   </li>
@@ -123,7 +117,7 @@ export function PopularModels(_props: PopularModelsProps) {
                   <li key={m.name} className='flex flex-col gap-0.5'>
                     <span className='text-sm font-medium'>{m.name}</span>
                     <span className='text-muted-foreground text-xs'>
-                      {formatCnyDual(m.priceCny)} / {t('per image')} · 1K
+                      {formatPoints(m.points)} / {t('per image')} · 1K
                     </span>
                   </li>
                 ))}
@@ -141,9 +135,7 @@ export function PopularModels(_props: PopularModelsProps) {
                   <li key={m.name} className='flex flex-col gap-0.5'>
                     <span className='text-sm font-medium'>{m.name}</span>
                     <span className='text-muted-foreground text-xs'>
-                      {m.priceCny == null
-                        ? t('Dynamic pricing')
-                        : `${formatCnyDual(m.priceCny)} / ${t('per second')} · 720P`}
+                      {formatPoints(m.points)} / {t('per second')} · 720P
                     </span>
                   </li>
                 ))}
