@@ -220,7 +220,22 @@ func (*Adaptor) ParseResponse(_ *gin.Context, resp *http.Response, info *relayco
 		taskID = extractNonEmptyString(raw, "taskId", "task_id", "id")
 	}
 	if taskID != "" {
-		return &channel.TaskSubmitResponse{UpstreamTaskID: taskID, TaskData: b}, nil
+		publicID := taskID
+		if info != nil && info.TaskRelayInfo != nil && info.PublicTaskID != "" {
+			publicID = info.PublicTaskID
+		}
+		return &channel.TaskSubmitResponse{
+			UpstreamTaskID: taskID,
+			TaskData:       b,
+			ClientResponse: map[string]any{
+				"code":    200,
+				"task_id": publicID,
+				"data": map[string]any{
+					"taskId":  publicID,
+					"task_id": publicID,
+				},
+			},
+		}, nil
 	}
 
 	// 2) 同步直出模式：兼容 OpenAI 标准 data:[{url}] 或 data.resultUrls / result_urls / url
