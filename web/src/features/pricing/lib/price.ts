@@ -16,10 +16,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
-import {
-  formatBillingCurrencyFromUSD,
-  formatDualCurrencyFromUSD,
-} from '@/lib/currency'
+import { formatBillingCurrencyFromUSD } from '@/lib/currency'
 
 import { QUOTA_TYPE_VALUES, TOKEN_UNIT_DIVISORS } from '../constants'
 import type { PricingModel, TokenUnit, PriceType } from '../types'
@@ -171,12 +168,11 @@ export function formatPrice(
   )
 
   const price = priceInUSD / TOKEN_UNIT_DIVISORS[tokenUnit]
-  return formatDualCurrencyFromUSD(price, {
+  return formatBillingCurrencyFromUSD(price, {
     showSymbol: showCurrencySymbol,
     digitsLarge: 4,
     digitsSmall: 6,
     abbreviate: false,
-    cnyFirst: true,
   })
 }
 
@@ -275,11 +271,10 @@ export function formatRequestPrice(
     usdExchangeRate
   )
 
-  return formatDualCurrencyFromUSD(priceInUSD, {
+  return formatBillingCurrencyFromUSD(priceInUSD, {
     showSymbol: showCurrencySymbol,
     digitsLarge: 4,
     digitsSmall: 4,
     abbreviate: false,
-    cnyFirst: true,
   })
 }
