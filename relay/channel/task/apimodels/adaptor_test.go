@@ -119,7 +119,7 @@ func (f roundTripFunc) RoundTrip(r *http.Request) (*http.Response, error) { retu
 
 func TestParseResponseVariants(t *testing.T) {
 	a := &Adaptor{}
-	info := &relaycommon.RelayInfo{PublicTaskID: "pub-123"}
+	info := &relaycommon.RelayInfo{TaskRelayInfo: &relaycommon.TaskRelayInfo{PublicTaskID: "pub-123"}}
 
 	cases := []struct {
 		name      string

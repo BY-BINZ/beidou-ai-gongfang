@@ -241,7 +241,7 @@ func (*Adaptor) ParseResponse(_ *gin.Context, resp *http.Response, info *relayco
 	}
 	if imgURL != "" {
 		immediateID := ""
-		if info != nil {
+		if info != nil && info.TaskRelayInfo != nil {
 			immediateID = info.PublicTaskID
 		}
 		if immediateID == "" {
