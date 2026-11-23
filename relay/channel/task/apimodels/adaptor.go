@@ -132,21 +132,138 @@ func imageRequestBody(c *gin.Context, info *relaycommon.RelayInfo) (map[string]a
 func (a *Adaptor) DoRequest(c *gin.Context, info *relaycommon.RelayInfo, body io.Reader) (*http.Response, error) {
 	return channel.DoTaskApiRequest(a, c, info, body)
 }
-func (*Adaptor) ParseResponse(_ *gin.Context, resp *http.Response, _ *relaycommon.RelayInfo) (*channel.TaskSubmitResponse, *taskdto.TaskError) {
+func extractNonEmptyString(m map[string]any, keys ...string) string {
+	for _, k := range keys {
+		if v, ok := m[k]; ok {
+			if s, ok := v.(string); ok && strings.TrimSpace(s) != "" {
+				return strings.TrimSpace(s)
+			}
+		}
+	}
+	return ""
+}
+
+func extractFirstURL(v any) string {
+	switch x := v.(type) {
+	case string:
+		return strings.TrimSpace(x)
+	case []any:
+		for _, item := range x {
+			switch elem := item.(type) {
+			case string:
+				if s := strings.TrimSpace(elem); s != "" {
+					return s
+				}
+			case map[string]any:
+				if s := extractNonEmptyString(elem, "url", "image_url", "imageUrl"); s != "" {
+					return s
+				}
+			}
+		}
+	}
+	return ""
+}
+
+func truncateSnippet(b []byte, limit int) string {
+	s := strings.TrimSpace(string(b))
+	if len(s) <= limit {
+		return s
+	}
+	return s[:limit] + "..."
+}
+
+func (*Adaptor) ParseResponse(_ *gin.Context, resp *http.Response, info *relaycommon.RelayInfo) (*channel.TaskSubmitResponse, *taskdto.TaskError) {
 	b, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, service.TaskErrorWrapperLocal(err, "invalid_response", http.StatusBadGateway)
 	}
-	var result struct {
-		Code int `json:"code"`
-		Data struct {
-			TaskID string `json:"taskId"`
-		} `json:"data"`
+	if resp.StatusCode >= http.StatusBadRequest {
+		return nil, service.TaskErrorWrapperLocal(
+			fmt.Errorf("APIMODELS HTTP %d: %s", resp.StatusCode, truncateSnippet(b, 240)),
+			"upstream_error",
+			resp.StatusCode,
+		)
 	}
-	if err = common.Unmarshal(b, &result); err != nil || result.Code != 200 || result.Data.TaskID == "" {
-		return nil, service.TaskErrorWrapperLocal(fmt.Errorf("invalid APIMODELS task response"), "invalid_response", http.StatusBadGateway)
+	var raw map[string]any
+	if err = common.Unmarshal(b, &raw); err != nil || raw == nil {
+		return nil, service.TaskErrorWrapperLocal(
+			fmt.Errorf("invalid APIMODELS task response (status=%d): %s", resp.StatusCode, truncateSnippet(b, 240)),
+			"invalid_response",
+			http.StatusBadGateway,
+		)
 	}
-	return &channel.TaskSubmitResponse{UpstreamTaskID: result.Data.TaskID, TaskData: b}, nil
+	if codeVal, hasCode := raw["code"]; hasCode {
+		if codeNum, ok := codeVal.(float64); ok && int(codeNum) != 200 && int(codeNum) != 0 {
+			msg := extractNonEmptyString(raw, "msg", "message", "error")
+			if msg == "" {
+				msg = truncateSnippet(b, 240)
+			}
+			return nil, service.TaskErrorWrapperLocal(
+				fmt.Errorf("APIMODELS error code %d: %s", int(codeNum), msg),
+				"upstream_error",
+				http.StatusBadGateway,
+			)
+		}
+	}
+
+	// 1) 异步任务模式：兼容 data.taskId / data.task_id / data.id 以及顶层 taskId / task_id / id
+	taskID := ""
+	var dataMap map[string]any
+	if dm, ok := raw["data"].(map[string]any); ok {
+		dataMap = dm
+		taskID = extractNonEmptyString(dm, "taskId", "task_id", "id")
+	}
+	if taskID == "" {
+		taskID = extractNonEmptyString(raw, "taskId", "task_id", "id")
+	}
+	if taskID != "" {
+		return &channel.TaskSubmitResponse{UpstreamTaskID: taskID, TaskData: b}, nil
+	}
+
+	// 2) 同步直出模式：兼容 OpenAI 标准 data:[{url}] 或 data.resultUrls / result_urls / url
+	imgURL := ""
+	if dataArr, ok := raw["data"].([]any); ok {
+		imgURL = extractFirstURL(dataArr)
+	}
+	if imgURL == "" && dataMap != nil {
+		for _, k := range []string{"resultUrls", "result_urls", "urls", "images", "url", "image_url", "imageUrl"} {
+			if imgURL = extractFirstURL(dataMap[k]); imgURL != "" {
+				break
+			}
+		}
+	}
+	if imgURL == "" {
+		for _, k := range []string{"resultUrls", "result_urls", "urls", "images", "url", "image_url", "imageUrl"} {
+			if imgURL = extractFirstURL(raw[k]); imgURL != "" {
+				break
+			}
+		}
+	}
+	if imgURL != "" {
+		immediateID := ""
+		if info != nil {
+			immediateID = info.PublicTaskID
+		}
+		if immediateID == "" {
+			immediateID = "apimodels-sync"
+		}
+		return &channel.TaskSubmitResponse{
+			UpstreamTaskID: immediateID,
+			TaskData:       b,
+			ClientResponse: raw,
+			Immediate: &relaycommon.TaskInfo{
+				Status:   string(model.TaskStatusSuccess),
+				Progress: taskcommon.ProgressComplete,
+				Url:      imgURL,
+			},
+		}, nil
+	}
+
+	return nil, service.TaskErrorWrapperLocal(
+		fmt.Errorf("invalid APIMODELS task response (status=%d): %s", resp.StatusCode, truncateSnippet(b, 240)),
+		"invalid_response",
+		http.StatusBadGateway,
+	)
 }
 func (*Adaptor) GetModelList() []string { return nil }
 func (*Adaptor) GetChannelName() string { return Platform }
@@ -176,36 +293,46 @@ func (*Adaptor) FetchTask(base, key string, task *model.Task, proxy string) (*ht
 	return noRedirects.Do(req)
 }
 func (*Adaptor) ParseTaskResult(_ *model.Task, _ *http.Response, body []byte) (*relaycommon.TaskInfo, error) {
-	var response struct {
-		Code int `json:"code"`
-		Data struct {
-			State      string   `json:"state"`
-			ResultURLs []string `json:"resultUrls"`
-			FailMsg    string   `json:"failMsg"`
-		} `json:"data"`
+	var raw map[string]any
+	if err := common.Unmarshal(body, &raw); err != nil || raw == nil {
+		return nil, fmt.Errorf("invalid APIMODELS response: %s", truncateSnippet(body, 200))
 	}
-	if err := common.Unmarshal(body, &response); err != nil {
-		return nil, err
+	if codeVal, hasCode := raw["code"]; hasCode {
+		if codeNum, ok := codeVal.(float64); ok && int(codeNum) != 200 && int(codeNum) != 0 {
+			return nil, fmt.Errorf("invalid APIMODELS response (code=%d)", int(codeNum))
+		}
 	}
-	if response.Code != 200 {
-		return nil, fmt.Errorf("invalid APIMODELS response")
+	dataMap, _ := raw["data"].(map[string]any)
+	if dataMap == nil {
+		dataMap = raw
+	}
+	state := strings.ToLower(extractNonEmptyString(dataMap, "state", "status"))
+	failMsg := extractNonEmptyString(dataMap, "failMsg", "fail_msg", "error", "message")
+	imgURL := ""
+	for _, k := range []string{"resultUrls", "result_urls", "urls", "images", "url", "image_url", "imageUrl"} {
+		if imgURL = extractFirstURL(dataMap[k]); imgURL != "" {
+			break
+		}
 	}
 	result := &relaycommon.TaskInfo{}
-	switch strings.ToLower(response.Data.State) {
-	case "completed":
+	switch state {
+	case "completed", "succeeded", "success", "done":
 		result.Status = string(model.TaskStatusSuccess)
-		if len(response.Data.ResultURLs) > 0 {
-			result.Url = response.Data.ResultURLs[0]
-		}
-	case "failed":
+		result.Url = imgURL
+	case "failed", "error", "canceled", "cancelled":
 		result.Status = string(model.TaskStatusFailure)
-		result.Reason = response.Data.FailMsg
-	case "pending", "queued":
+		result.Reason = failMsg
+	case "pending", "queued", "submitted":
 		result.Status = string(model.TaskStatusQueued)
-	case "processing", "running":
+	case "processing", "running", "in_progress":
 		result.Status = string(model.TaskStatusInProgress)
 	default:
-		return nil, fmt.Errorf("unknown APIMODELS task state")
+		if imgURL != "" {
+			result.Status = string(model.TaskStatusSuccess)
+			result.Url = imgURL
+			return result, nil
+		}
+		return nil, fmt.Errorf("unknown APIMODELS task state: %q", state)
 	}
 	return result, nil
 }

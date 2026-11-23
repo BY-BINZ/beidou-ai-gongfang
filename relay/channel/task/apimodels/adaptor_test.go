@@ -116,3 +116,45 @@ func TestChatImagePromptValidation(t *testing.T) {
 type roundTripFunc func(*http.Request) (*http.Response, error)
 
 func (f roundTripFunc) RoundTrip(r *http.Request) (*http.Response, error) { return f(r) }
+
+func TestParseResponseVariants(t *testing.T) {
+	a := &Adaptor{}
+	info := &relaycommon.RelayInfo{PublicTaskID: "pub-123"}
+
+	cases := []struct {
+		name      string
+		body      string
+		wantID    string
+		wantURL   string
+		wantError bool
+	}{
+		{"camel_taskId", `{"code":200,"data":{"taskId":"t-1"}}`, "t-1", "", false},
+		{"snake_task_id", `{"code":0,"data":{"task_id":"t-2"}}`, "t-2", "", false},
+		{"top_level_id", `{"task_id":"t-3"}`, "t-3", "", false},
+		{"sync_openai_data_array", `{"created":1700000000,"data":[{"url":"https://cdn.example/out.png"}]}`, "pub-123", "https://cdn.example/out.png", false},
+		{"sync_resultUrls", `{"code":200,"data":{"resultUrls":["https://cdn.example/out2.png"]}}`, "pub-123", "https://cdn.example/out2.png", false},
+		{"bad_payload", `{"code":500,"msg":"upstream overloaded"}`, "", "", true},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			resp := &http.Response{
+				StatusCode: http.StatusOK,
+				Body:       io.NopCloser(strings.NewReader(tc.body)),
+			}
+			parsed, taskErr := a.ParseResponse(nil, resp, info)
+			if tc.wantError {
+				require.NotNil(t, taskErr)
+				return
+			}
+			require.Nil(t, taskErr)
+			assert.Equal(t, tc.wantID, parsed.UpstreamTaskID)
+			if tc.wantURL != "" {
+				require.NotNil(t, parsed.Immediate)
+				assert.Equal(t, tc.wantURL, parsed.Immediate.Url)
+			} else {
+				assert.Nil(t, parsed.Immediate)
+			}
+		})
+	}
+}
