@@ -23,12 +23,23 @@ import (
 const Platform = "apimodels-image"
 
 var models = map[string]bool{
-	"gemini-3-pro-image": true, "nano-banana-2-1": true, "nanobanana2": true,
-	"gemini-3.1-flash-image-preview": true, "gpt-image-2.6-sunburst": true,
-	"gpt-image-2.6-flare": true, "gpt-image-2.5-sunburst": true,
-	"gpt-image-2.5-flare": true, "gpt-image-2": true, "gpt-image-2-upscaled": true,
-	"doubao-seedream-5-5": true, "doubao-seedream-5-0-pro": true,
-	"qwen3-image": true, "qwen3-image-pro": true, "qwen-image-edit-spicy": true, "real-esrgan": true,
+	"gemini-3-pro-image": true, "gemini-3-pro-image-preview": true,
+	"nano-banana-2-1": true, "nanobanana2": true,
+	"gemini-3.1-flash-image-preview": true, "gemini-3.1-flash-image": true, "gemini-2.5-flash-image": true,
+	"gpt-image-2.6-sunburst": true, "gpt-image-2.6-flare": true,
+	"gpt-image-2.5-sunburst": true, "gpt-image-2.5-flare": true,
+	"gpt-image-2-all": true, "gpt-image-2": true, "gpt-image-2-lite": true, "gpt-image-2-upscaled": true,
+	"doubao-seedream-5-5": true, "doubao-seedream-5-0-pro": true, "seedream-5.0-pro-spicy": true,
+	"doubao-seedream-5-0-260128": true, "doubao-seedream-5-0-flash": true, "doubao-seedream-4-5-251128": true,
+	"qwen3-image": true, "qwen3-image-pro": true, "qwen-image-edit-spicy": true, "qwen-image-2.1": true,
+	"grok-imagine-image-pro": true, "grok-imagine-image": true,
+	"kling-v3-omni": true, "kling-v3": true, "kling-v2-1": true, "kling-v2-new": true,
+	"kling-multi-image": true, "kling-image-o1": true,
+	"minimax-h3-image": true, "minimax-h3-image-highspeed": true,
+	"flux-2-klein-4b": true,
+	"z-image-spicy-pro": true, "z-image-spicy": true,
+	"sparkpix-image-edit": true, "sparkpix-image": true,
+	"muse-image": true, "real-esrgan": true,
 }
 
 func Matches(base, model string) bool {
